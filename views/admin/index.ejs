@@ -1,0 +1,58 @@
+<%- include('../partials/admin-header') %>
+
+     
+        <!-- partial -->
+        <div class="main-panel">
+          <div class="content-wrapper">
+            
+            <!-- start......................................................... -->
+            <div class="row ">
+              <div class="col-12 grid-margin">
+                <div class="card">
+                  <div class="card-body">
+                    <h4 class="card-title">Order Status</h4>
+                    <div class="table-responsive">
+                      <table class="table">
+                        <thead>
+                          <tr>
+                            
+                            <th> No </th>
+                            <th> Name </th>
+                            <th> Email </th>
+                            <th> Phone Number </th>                           
+                            <th> Status </th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <% for(var i=0;i<users.length;i++){%>
+                          <tr>
+                            <td><%= i+1 %></td>
+                            <td><%= users[i].name %></td>
+                            <td><%= users[i].email %></td>
+                            <td><%= users[i].mobile %></td>
+                            <td>
+                              <% if(users[i].isVerified) { %>
+                              <a href="/admin/block-user?id=<%= users[i]._id%>"><div class="badge badge-outline-success">Block</div></a>
+                              <% } else { %>
+                                <a href="/admin/block-user?id=<%= users[i]._id%>"><div class="badge badge-outline-success">Unblock</div></a>
+                                <% } %>
+                            </td>
+                          </tr>
+                          <%}%>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+        <!-- end......................................................... -->
+
+            
+            
+          </div>
+          <!-- content-wrapper ends -->
+          <!-- partial:partials/_footer.html -->
+          
+
+          <%- include('../partials/admin-footer') %>

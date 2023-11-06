@@ -1,0 +1,80 @@
+
+<%- include('../partials/admin-header') %>
+
+
+        <!-- partial -->
+        <div class="main-panel">
+          <div class="content-wrapper">
+            <div class="page-header" style="display: flex;">
+              <div style="flex: 3;"></div>
+              <div style="text-align: center;flex: 3">
+                <h3 class="page-title" > Product Update </h3>
+              </div>
+              <div style="flex: 3;"></div>
+              
+            </div>
+            <div class="row" style="display: flex;">
+              <div style="flex: 2;"></div>
+              <div class="col-12 grid-margin stretch-card" style="flex: 5;">
+                <div class="card">
+                  <div class="card-body">
+                    <!-- <h4 class="card-title">Basic form elements</h4>
+                    <p class="card-description"> Basic form elements </p> -->
+                    <form class="forms-sample" id="update-product" method="POST" >
+                      <!-- enctype="multipart/form-data" -->
+                      <div class="form-group">
+                        <label for="exampleInputName1">Name</label>
+                        <input type="hidden" value="<%= user._id %>" name="id"  />
+                        <input type="text" value="<%= user.name %>" class="form-control" name="name" id="exampleInputName1" placeholder="">
+                      </div>
+                      <div class="form-group">
+                        <label for="exampleSelectGender">Category</label>
+                        <input type="text" value="<%= user.category %>" class="form-control" name="category" id="exampleInputName1" placeholder="">
+                      </div>
+                      <div class="form-group">
+                        <!-- <label for="exampleTextarea1">Description</label>
+                        <input type="text" value="<%= user.description %>" class="form-control" name="description" id="exampleInputName1" placeholder="">
+                       -->
+                       <label for="exampleSelectGender">Edit Category</label>
+                       <select class="form-control" name="category" id="exampleSelectGender">
+
+                         <% for(var i=0;i<category.length;i++){%>
+                           <option value="<%= category[i].name %>"><%= category[i].name %></option>
+                           <%}%>
+
+                       </select>
+                      </div>
+
+                      <div class="form-group">
+                        <label for="exampleSelectGender">Description</label>
+                        <input type="text" value="<%= user.description %>" class="form-control" name="description" id="exampleInputName1" placeholder="">
+                      </div>
+
+                      <div class="form-group">
+                        <label for="exampleInputName1">price</label>
+                        <input type="number" value="<%= user.price %>" class="form-control" name="price" id="exampleInputName1" placeholder="">
+                      </div>
+
+                      <div class="form-group">
+                        <label for="exampleInputName1">stock</label>
+                        <input type="number" value="<%= user.stock %>" class="form-control" name="stock" id="exampleInputName1" placeholder="">
+                      </div>
+                      <div style="text-align: center;">
+                        <button type="submit" class="btn btn-primary mr-2" >Submit</button>
+                      </div>
+                      
+                      <!-- <button class="btn btn-dark">Cancel</button> -->
+                    </form>
+
+                  </div>
+                </div>
+              </div>
+              <div style="flex: 2;"></div>
+
+            </div>
+          </div>
+          <!-- content-wrapper ends -->
+          <!-- partial:../../partials/_footer.html -->
+          
+          
+          <%- include('../partials/admin-footer') %>

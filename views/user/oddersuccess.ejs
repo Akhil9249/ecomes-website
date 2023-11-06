@@ -1,0 +1,165 @@
+<%- include('../partials/user-header') %>
+
+        <main class="main">
+        	<div class="page-header text-center" style="background-image: url('assets/images/page-header-bg.jpg')">
+        		<div class="container">
+        			<h1 class="page-title">Odder Success<span></span></h1>
+        		</div><!-- End .container -->
+        	</div><!-- End .page-header -->
+            
+
+            <div class="page-content">
+            	<div class="checkout">
+	                <div class="container">
+            			
+
+
+            			<!-- <form action="#"> -->
+		                	<div class="row">
+		                		
+		                		<div class="col-lg-5">
+		                			<div class="summary">
+		                				<h3 class="summary-title">Your Order</h3><!-- End .summary-title -->
+
+		                				<table class="table table-summary">
+		                					<thead>
+		                						<tr>
+		                							<th><p >Product</p></th>
+		                							<th><p>Name</p></th>
+													<th><p>Price</p></th>
+		                							<th><p>Quantity</p></th>
+													<th><p>Total</p></th>
+		                							
+		                						</tr>
+		                					</thead>
+
+		                					<tbody>
+		                						<tr>
+
+													<% for(var i=0;i<products.length;i++){%>
+
+											
+														<tr>
+															<!-- <h1>........</h1> -->
+															<td class="product-col">
+																<div class="product">
+																	<figure class="product-media">
+																		<a href="#">
+																			<% if(products[i].image) { %>
+																				<img src="<%= products[i].image[0] %>" alt="img" class="product-image" />
+																				<% }else{ %> Image Not Found <% } %>
+																		</a>
+																	</figure>
+				
+																	<!-- <h3 class="">
+																		<p><%= products[i].name %></p>
+																		
+																	</h3> -->
+																</div><!-- End .product -->
+															</td>
+															<td><p><%= products[i].name %></p></td>
+															<td class="" ><%= products[i].price %></td>
+															<td class="product-col" style="text-align: center;">
+				
+																<% for(var j=0;j<userdt.cart.item.length;j++){%>
+				
+																<!-- <div class="" > -->
+																	
+																	<% if( products[i]._id.toString()  ==  userdt.cart.item[j].productId.toString() ) { %>
+																		<!-- <span onclick="priceinc('<%= products[i]._id %>','<%= sessval %>',-1)"><button>-</button></span> &nbsp&nbsp; -->
+																		<span id="sample" ><%= userdt.cart.item[j].qty %></span>&nbsp&nbsp;
+																		<!-- <span onclick="priceinc('<%= products[i]._id %>','<%= sessval %>',1)"><button>+</button></span> -->
+																		<% } %>	
+				
+											
+																<!-- </div> -->
+																<%}%>
+				
+															</td>
+															
+															<td class="">
+																<% for(var l=0;l<userdt.cart.item.length;l++){%>
+				
+																<% if( products[i]._id.toString()  ==  userdt.cart.item[l].productId.toString() ) { %>
+																	<span id="sample"><%= userdt.cart.item[l].singletotal %></span>
+																<% } %>
+				
+																<%}%>
+															</td>
+															
+				
+				
+															<!-- <td class="remove-col" onclick="prremove('<%= products[i]._id %>','<%= sessval %>')"><button class="btn-remove"><i class="icon-close"></i></button></td> -->
+														</tr>
+														
+				
+														<%}%>
+
+													
+													<!--...................... ................ -->
+
+		                						</tr>
+
+		                						
+		                						<!-- <tr class="summary-subtotal">
+		                							<td>Subtotal:</td>
+		                							<td><%= total %></td>
+		                						</tr> -->
+
+		                						<tr class="summary-total">
+		                							<td>Total:</td>
+		                							<td><%= total %></td>
+		                						</tr><!-- End .summary-total -->
+		                					</tbody>
+		                				</table><!-- End .table table-summary -->
+
+		                				
+                                        <a href="/">
+                                            <button type="submit" class="btn btn-outline-primary-2 btn-order btn-block">
+                                                <span class="btn-text">OK</span>
+                                                <span class="btn-hover-text">Done</span>
+                                            </button>
+                                        </a>
+		                				
+		                			</div><!-- End .summary -->
+		                		</div><!-- End .col-lg-3 -->
+                                <aside class="col-lg-7">
+
+									<% for(var i=0;i<productad.length;i++){%>
+										
+										<div class="card card-dashboard">
+											<div class="card-body">
+												<h3 class="card-title">Address</h3><!-- End .card-title -->
+
+												<p><%= productad[i].fullname %><br>
+													<%= productad[i].phone1 %><br>
+													<%= productad[i].pincode %><br>
+													<%= productad[i].state %><br>
+													<%= productad[i].city %><br>
+													<%= productad[i].houseNo %><br>
+													<%= productad[i].roadName %><br>
+												<a href="#">Edit <i class="icon-edit"></i></a></p>
+											</div><!-- End .card-body -->
+											
+											<br>
+										</div><!-- End .card-dashboard -->
+										
+										<%}%>
+										<br>
+                                        
+
+
+								
+                                </aside><!-- End .col-lg-9 -->
+
+
+
+
+		                	</div><!-- End .row -->
+            			<!-- </form> -->
+	                </div><!-- End .container -->
+                </div><!-- End .checkout -->
+            </div><!-- End .page-content -->
+        </main><!-- End .main -->
+
+        <%- include('../partials/user-footer') %>

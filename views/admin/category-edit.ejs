@@ -1,0 +1,75 @@
+
+<%- include('../partials/admin-header') %>
+
+
+        <!-- partial -->
+        <div class="main-panel">
+          <div class="content-wrapper">
+            <div class="page-header">
+              <h3 class="page-title"> Edit Category </h3>
+
+            </div>
+            <div class="row">
+              <div class="col-12 grid-margin stretch-card">
+                <div class="card">
+                  <div class="card-body">
+                    
+                    <form class="forms-sample" method="POST" id="update-category">
+                      <% for(var i=0;i<category.length;i++){%>
+                      <div class="form-group">
+                        <label for="exampleInputName1">Name</label>
+                        <input type="hidden" value="<%= category[i]._id %>" name="id"  />
+                        <div style="display: flex;">
+                          <div style="flex: 3;">
+                            <input type="text" value="<%= category[i].name %>" class="form-control" name="name" id="exampleInputName1" placeholder="Name">
+                            
+                          </div>
+                          <div style="flex: 4;">
+                            <a href="/admin/editcategoryupdate?id=<%= category[i]._id %>" class="btn border-shadow update">
+                              <span class="text-gradient"><i class="fas fa-pencil-alt"></i></span>
+                          </a>
+                          <span>
+                            <a href="" style="text-decoration: none;"><div class="badge badge-outline-success">Block</div></a>
+                          </span>
+                          </div>
+                        </div>
+                        
+                      </div>
+
+                      <div class="form-group">
+                        <label for="exampleTextarea1">Description</label>
+                        <div style="display: flex;">
+                          <div style="flex: 3;">
+                            <input type="text" value="<%= category[i].description %>" class="form-control" name="description" id="exampleInputName1" placeholder="">
+                            
+                          </div>
+                          <div style="flex: 4;">
+                            
+                          </div>
+                        </div>
+                        
+                      </div>
+
+                      <br>
+                      <%}%>
+                    </form>
+
+                    <button type="submit" class="btn btn-primary mr-2">back</button>
+
+                    <!-- <select class="form-control" name="category" id="exampleSelectGender">
+
+                      <% for(var i=0;i<category.length;i++){%>
+                        <option value="<%= category[i].name %>"><%= category[i].name %></option>
+                        <%}%>
+
+                    </select> -->
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+          <!-- content-wrapper ends -->
+          <!-- partial:../../partials/_footer.html -->
+          
+          <%- include('../partials/admin-footer') %>

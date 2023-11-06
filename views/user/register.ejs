@@ -1,0 +1,133 @@
+<%- include('../partials/user-header') %>
+
+
+        <main class="main">
+            <nav aria-label="breadcrumb" class="breadcrumb-nav border-0 mb-0">
+                <div class="container">
+                    
+                </div><!-- End .container -->
+            </nav><!-- End .breadcrumb-nav -->
+
+            <div class="login-page bg-image pt-8 pb-8 pt-md-12 pb-md-12 pt-lg-17 pb-lg-17" style="background-image: url('assets/images/backgrounds/login-bg.jpg')">
+            	<div class="container">
+            		<div class="form-box">
+            			<div class="form-tab">
+	            			<ul class="nav nav-pills nav-fill" role="tablist">
+							   
+							    <li class="nav-item">
+							        <a class="nav-link active" id="register-tab-2" data-toggle="tab" href="#register-2" role="tab" aria-controls="register-2" aria-selected="true">Register</a>
+							    </li>
+							</ul>
+							<div class="tab-content">
+							    <div class="tab-pane fade" id="signin-2" role="tabpanel" aria-labelledby="signin-tab-2">
+							    	
+							    </div><!-- .End .tab-pane -->
+							    <div class="tab-pane fade show active" id="register-2" role="tabpanel" aria-labelledby="register-tab-2">
+							    	<form action="/api/users" method="POST" id="add_user" onsubmit="return toggleLabel()">
+							    		<div class="form-group">
+							    			<label for="register-email">Name *</label>
+							    			<input type="text" class="form-control" id="register-name" name="name" >
+											<p id="myLabelname" style="color: rgb(218, 30, 30);">Please fill name....</p>
+							    		</div><!-- End .form-group -->
+
+                                        <div class="form-group">
+							    			<label for="register-email">Your email address *</label>
+							    			<input type="email" class="form-control" id="register-email-2" name="email" >
+											<p id="myLabelemail" style="color: rgb(218, 30, 30);">Please fill email....</p>
+							    		</div><!-- End .form-group -->
+
+                                        <div class="form-group">
+							    			<label for="register-email">Mobile Number *</label>
+							    			<input type="text" class="form-control" id="register-number" name="mobile" >
+											<p id="myLabelmob" style="color: rgb(218, 30, 30);">Please fill mobilenumber....</p>
+							    		</div><!-- End .form-group -->
+
+							    		<div class="form-group">
+							    			<label for="register-password-2">Password *</label>
+							    			<input type="password" class="form-control" id="register-password-2" name="password" >
+											<p id="myLabelpass" style="color: rgb(218, 30, 30);">Please fill password....</p>
+							    		</div><!-- End .form-group -->
+
+                                        <!-- <div class="form-group">
+							    			<label for="register-password-2">conform Password *</label>
+							    			<input type="password" class="form-control" id="register-password-2" name="register-password" required>
+							    		</div> -->
+										<!-- End .form-group -->
+
+							    		<div class="form-footer">
+							    			<button type="submit" class="btn btn-outline-primary-2">
+			                					<span>SIGN UP</span>
+			            						<i class="icon-long-arrow-right"></i>
+			                				</button>
+
+			                				<div class="custom-control custom-checkbox">
+												<input type="checkbox" class="custom-control-input" id="register-policy-2" required>
+												<label class="custom-control-label" for="register-policy-2">I agree to the <a href="#">privacy policy</a> *</label>
+											</div><!-- End .custom-checkbox -->
+							    		</div><!-- End .form-footer -->
+							    	</form>
+							    	
+							    </div><!-- .End .tab-pane -->
+							</div><!-- End .tab-content -->
+						</div><!-- End .form-tab -->
+            		</div><!-- End .form-box -->
+            	</div><!-- End .container -->
+            </div><!-- End .login-page section-bg -->
+        </main><!-- End .main -->
+
+		
+		
+		<script>
+
+			var labelname = document.getElementById("myLabelname");
+			var labelemail = document.getElementById("myLabelemail");			
+			var labelmob = document.getElementById("myLabelmob");
+			var labelpass = document.getElementById("myLabelpass");
+			labelname.style.display = "none"; // Hide the label
+			labelemail.style.display = "none"; // Hide the label
+			labelmob.style.display = "none"; // Hide the label
+			labelpass.style.display = "none"; // Hide the label
+	
+				
+			function toggleLabel(event) {
+		
+				// var labelemail = document.getElementById("myLabelemail");
+				// var labelpass = document.getElementById("myLabelpass");
+	
+				
+				var namevalue = document.getElementById("register-name");
+				var emailvalue = document.getElementById("register-email-2");			
+				var numbervalue = document.getElementById("register-number");
+				var passwordvalue = document.getElementById("register-password-2");
+	
+				if(namevalue.value == "" || emailvalue.value == ""  || numbervalue.value == "" || passwordvalue.value == ""){
+					
+					// event.preventDefault()
+					if(namevalue.value == ""){
+						
+						labelname.style.display = "block"
+					}
+					if(emailvalue.value == ""){
+							
+						labelemail.style.display = "block"
+					}
+					if(numbervalue.value == ""){
+							
+						labelmob.style.display = "block"
+					}
+					if(passwordvalue.value == ""){
+							
+						labelpass.style.display = "block"
+					}
+						
+					
+					return false;
+						
+					
+				}
+			}
+	
+			</script>
+
+        
+        <%- include('../partials/user-footer') %>        

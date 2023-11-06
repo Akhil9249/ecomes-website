@@ -1,0 +1,70 @@
+<%- include('../partials/admin-header') %>
+
+     
+        <!-- partial -->
+        <div class="main-panel">
+          <div class="content-wrapper">
+            
+            <!-- start......................................................... -->
+            <div class="row ">
+              <div class="col-12 grid-margin">
+                <div class="card">
+                  <div class="card-body">
+                    <h4 class="card-title" style="text-align: center;">Category</h4>
+                    <br>
+                    <div class="table-responsive">
+                      <table class="table">
+                        <thead>
+                          <tr>                          
+                            <th> No </th>
+                            <th> Category </th>
+                            <th></th>
+                            <th></th>
+                            <th style="text-align: center;">Description</th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th>Delete</th>
+                            <th>Edit</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                        <% for(var i =0;i<category.length;i++) {%>
+                          <tr>
+                            <td><%= i+1%></td>
+                            <td><%= category[i].name %></td>
+                            <td></td>
+                            <td></td>
+                            <td style="text-align: center;"><%= category[i].description %></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td>
+                                <a class="btn border-shadow delete"  >
+                                    <span class="text-gradient"><i class="fas fa-times"></i></span>
+                                </a>                            
+                            </td>
+                            <td>
+                              <a href="/admin/editCategory?id=<%= category[i]._id%>" class="btn border-shadow update">
+                                <span class="text-gradient"><i class="fas fa-pencil-alt"></i></span>
+                            </a>                            
+                          </td>
+                          </tr>
+                         <%}%>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+        <!-- end......................................................... -->
+
+            
+            
+          </div>
+          <!-- content-wrapper ends -->
+          <!-- partial:partials/_footer.html -->
+          
+
+          <%- include('../partials/admin-footer') %>

@@ -1,0 +1,74 @@
+<%- include('../partials/admin-header') %>
+
+     
+        <!-- partial -->
+        <div class="main-panel">
+          <div class="content-wrapper">
+            
+            <!-- start......................................................... -->
+            <div class="row ">
+              <div class="col-12 grid-margin">
+                <div class="card">
+                  <div class="card-body">
+                    <h4 class="card-title" style="text-align: center;">Product</h4>
+                    <br>
+                    <div class="table-responsive">
+                      <table class="table">
+                        <thead>
+                          <tr>
+                            
+                            <th> No </th>
+                            <th> Name </th>
+                            <th> Category </th>
+                            <th> image </th>
+                            <th> description </th>                           
+                            <th> price </th>
+                            <th> stock </th>
+                            <th> status </th>
+                            <th> Edit </th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <% for(var i=0;i<products.length;i++){%>
+                          <tr>
+                            <td><%= i+1 %></td>
+                            <td><%= products[i].name %></td>
+                            <td><%= products[i].category %></td>
+                            <td>
+                              <% if(products[i].image) { %>
+                                  <img src="<%= products[i].image[0] %>"
+                                      width="100vw" height="100vh" alt="img">
+                                  <% }else{ %>
+                                      Image Not Found
+                                      <% } %>
+                              </td>
+                            <td><%= products[i].description %></td>
+                            <td><%= products[i].price %></td>
+                            <td><%= products[i].stock %></td>
+                            <td>
+                              <a href="" style="text-decoration: none;"><div class="badge badge-outline-success">Block</div></a>  
+                            </td>
+                            <td>
+                              <a href="/admin/update-products?id=<%= products[i]._id%>" class="btn border-shadow update">
+                                <span class="text-gradient"><i class="fas fa-pencil-alt"></i></span>
+                            </a>                            
+                          </td>
+                          </tr>
+                          <%}%>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+        <!-- end......................................................... -->
+
+            
+            
+          </div>
+          <!-- content-wrapper ends -->
+          <!-- partial:partials/_footer.html -->
+          
+
+          <%- include('../partials/admin-footer') %>
