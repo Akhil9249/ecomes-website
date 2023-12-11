@@ -24,7 +24,7 @@
                             <th></th>
                             <th></th>
                             <th></th>
-                            <th>Delete</th>
+                            <th >Delete</th>
                             <th>Edit</th>
                           </tr>
                         </thead>
@@ -40,12 +40,14 @@
                             <td></td>
                             <td></td>
                             <td>
-                                <a class="btn border-shadow delete"  >
-                                    <span class="text-gradient"><i class="fas fa-times"></i></span>
-                                </a>                            
+                                <span style="text-align: center;">
+                                  <a href="" style="text-decoration: none;"><div class="badge badge-outline-success" >Block</div></a>
+                                </span>
+                                  
+                                                           
                             </td>
                             <td>
-                              <a href="/admin/editCategory?id=<%= category[i]._id%>" class="btn border-shadow update">
+                              <a href="/admin/editcategoryupdate?id=<%= category[i]._id%>" class="btn border-shadow update">
                                 <span class="text-gradient"><i class="fas fa-pencil-alt"></i></span>
                             </a>                            
                           </td>

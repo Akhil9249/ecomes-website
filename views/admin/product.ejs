@@ -35,18 +35,24 @@
                             <td><%= products[i].name %></td>
                             <td><%= products[i].category %></td>
                             <td>
-                              <% if(products[i].image) { %>
+                              <a href="">
+                                <% if(products[i].image) { %>
                                   <img src="<%= products[i].image[0] %>"
                                       width="100vw" height="100vh" alt="img">
                                   <% }else{ %>
                                       Image Not Found
-                                      <% } %>
+                               <% } %>
+                              </a>
                               </td>
                             <td><%= products[i].description %></td>
                             <td><%= products[i].price %></td>
                             <td><%= products[i].stock %></td>
                             <td>
-                              <a href="" style="text-decoration: none;"><div class="badge badge-outline-success">Block</div></a>  
+                              <% if(products[i].isAvailable) { %>
+                                <a href="/admin/block-products?id=<%= products[i]._id%>" style="text-decoration: none;"><div class="badge badge-outline-success">Block</div></a>  
+                                <%}else{%>
+                                  <a href="/admin/block-products?id=<%= products[i]._id%>" style="text-decoration: none;"><div class="badge badge-outline-success">UnBlock</div></a>  
+                                  <%}%>
                             </td>
                             <td>
                               <a href="/admin/update-products?id=<%= products[i]._id%>" class="btn border-shadow update">

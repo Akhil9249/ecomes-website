@@ -67,8 +67,12 @@ const schema = new mongoose.Schema({
       },
     
       status: {
-        type: Boolean,
-        default: 'true'
+        type: String,
+        
+      },
+      reason: {
+        type: String,
+        
       }
       , 
       productReturned: [{

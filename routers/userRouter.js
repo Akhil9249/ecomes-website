@@ -30,11 +30,13 @@ function abc(req, res, next) {
 
 router.get("/", userControllers.home);
 
-router.get("/register", userControllers.register);
+router.get("/login", userControllers.login);
 
 router.post("/signin", userControllers.signin);
 
-router.get("/login", userControllers.login);
+router.get("/register", userControllers.register);
+
+router.post("/api/users", userControllers.create);
 
 router.get("/logout", userControllers.logout);
 
@@ -46,7 +48,17 @@ router.get("/single-product", userControllers.single_product);
 
 router.get("/wishlist", userControllers.wishlist);
 
+router.put("/addwishlist", userControllers.addwishlistput);
+
+router.put("/wishlist/remove", userControllers.wishlistremove);
+
 router.get("/cart", userControllers.cart);
+
+router.put("/addcart", userControllers.addcartput);
+
+router.put("/cart/updat", userControllers.cartupdat);
+
+router.put("/cart/remove", userControllers.cartremove);
 
 router.get("/dashboard", userControllers.dashboard);
 
@@ -66,31 +78,27 @@ router.post("/otppost", userControllers.otppost);
 
 router.post("/passwordchange", userControllers.passwordchange);
 
-
 // router.get('/addcart',userControllers.addcart)
 
-router.put("/addcart", userControllers.addcartput);
-
-router.put("/addwishlist", userControllers.addwishlistput);
-
 router.get("/checkout", userControllers.checkout);
-
-router.put("/cart/updat", userControllers.cartupdat);
-
-router.put("/cart/remove", userControllers.cartremove);
-
-router.put("/wishlist/remove", userControllers.wishlistremove);
 
 router.get("/oddersuccess", userControllers.oddersuccess);
 
 router.post("/oddersuccesspost", userControllers.oddersuccesspost);
 
+router.post("/check/phoneup", userControllers.checkphoneup);
+
+router.get("/orderStatus", userControllers.orderStatus);
+
+router.put("/couponCodeCheck", userControllers.couponCodeCheck);
+
+router.put("/return/reason", userControllers.return_reason);
+
+router.get("/addressChange", userControllers.addressChange);
+
 // router.put('/check/user?id',userControllers.block_user_find)
 // router.post('/addAddress',userControllers.addAddress)
-
 //post methode
-
-router.post("/api/users", userControllers.create);
 
 router.get("/user/check/product", userControllers.productfind);
 
@@ -99,6 +107,8 @@ router.get("/check/product", userControllers.productfind);
 router.get("/user/filter/product", userControllers.productfilter);
 
 // router.get('/user/filter/sort',userControllers.sortfilter)
+
+router.post("/odder/cancel", userControllers.odder_cancel);
 
 // ************************ product page ************************ //
 router.post("/poduct/search", userControllers.productsearch);
@@ -110,6 +120,8 @@ router.post("/poduct/filter", userControllers.filterfind);
 router.get("/poduct/filter", userControllers.filterfindcategory);
 
 router.post("/poduct/pagin", userControllers.poductpagin);
+
+router.put("/adress/update/:id", userControllers.adress_update);
 
 // ************************ product page ************************ //
 

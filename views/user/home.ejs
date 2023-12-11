@@ -108,6 +108,9 @@
     <div class="mb-4"></div>
     <!-- End .mb-2 -->
 
+     <!-- **************************** -->
+    <div id="sample">
+     <!-- **************************** -->
     <div class="container">
         <h2 class="title text-center mb-2">Explore Popular Categories</h2>
         <!-- End .title -->
@@ -115,7 +118,7 @@
         <div class="cat-blocks-container">
             <div class="row">
                 <div class="col-6 col-sm-3 col-lg-3">
-                    <a href="category.html" class="cat-block">
+                    <a href="#" class="cat-block">
                         <figure>
                             <span>
                                 <img src="<%= products[13].image[0] %>" alt="img" class="product-image" style="width: 100px;height: 100px;" />
@@ -128,7 +131,7 @@
                 </div>
 
                 <div class="col-6 col-sm-3 col-lg-3">
-                    <a href="category.html" class="cat-block">
+                    <a href="#" class="cat-block">
                         <figure>
                             <span>
                                 <img src="<%= products[7].image[0] %>" alt="img" class="product-image" style="width: 100px;height: 100px;" />
@@ -141,20 +144,20 @@
                 </div>
 
                 <div class="col-6 col-sm-3 col-lg-3">
-                    <a href="category.html" class="cat-block">
+                    <a href="#" class="cat-block">
                         <figure>
                             <span>
                                 <img src="<%= products[1].image[0] %>" alt="img" class="product-image" style="width: 100px;height: 100px;" />
                             </span>
                         </figure>
 
-                        <h3 class="cat-block-title"><%= products[14].name %></h3>
-                        <!-- End .cat-block-title -->
+                        <h3 class="cat-block-title"><%= products[1].name %></h3>
+                        
                     </a>
                 </div>
 
                 <div class="col-6 col-sm-3 col-lg-3">
-                    <a href="category.html" class="cat-block">
+                    <a href="#" class="cat-block">
                         <figure>
                             <span>
                                 <img src="<%= products[14].image[0] %>" alt="img" class="product-image" style="width: 100px;height: 100px;" />
@@ -162,7 +165,7 @@
                         </figure>
 
                         <h3 class="cat-block-title"><%= products[14].name %></h3>
-                        <!-- End .cat-block-title -->
+                        
                     </a>
                 </div>
                 <!-- End .col-sm-4 col-lg-2 -->
@@ -238,26 +241,26 @@
                                     }
                                 }'
                     >
-                        <% for(var i=0;i<5;i++){%>
+                        <% for(var i=0;i<producthe.length;i++){%>
                         <div class="product">
                             <figure class="product-media">
-                                <span class="product-label label-sale">Sale</span>
+                                <span class="product-label label-sale">offer <%= offerhf.discount%>%</span>
                                 <a href="/single-product?id=<%= products[i]._id%>">
-                                    <% if(products[i].image) { %>
-                                    <img src="<%= products[i].image[0] %>" alt="img" class="product-image" />
+                                    <% if(producthe[i].image) { %>
+                                    <img src="<%= producthe[i].image[0] %>" alt="img" class="product-image" />
                                     <% }else{ %> Image Not Found <% } %>
                                 </a>
 
                                 <div class="product-action-vertical">
                                     <form onsubmit="return false">
-                                        <button class="btn-product-icon btn-wishlist btn-expandable" onclick="addtowishlist('<%= products[i]._id %>','<%= products[i].price %>')" type="submit"><span>add to wishlist</span></button>
+                                        <button class="btn-product-icon btn-wishlist btn-expandable" onclick="addtowishlist('<%= producthe[i]._id %>','<%= producthe[i].price %>')" type="submit"><span>add to wishlist</span></button>
                                     </form>
                                 </div>
                                 <!-- End .product-action-vertical -->
 
                                 <div class="product-action">
                                     <form onsubmit="return false">
-                                        <button class="btn-product btn-cart" title="Add to cart" onclick="addtocart('<%= products[i]._id %>','<%= products[i].price %>')" type="submit"><span>add to cart</span></button>
+                                        <button class="btn-product btn-cart" title="Add to cart" onclick="addtocart('<%= producthe[i]._id %>','<%= producthe[i].price %>')" type="submit"><span>add to cart</span></button>
                                     </form>
                                 </div>
                                 <!-- End .product-action -->
@@ -266,13 +269,13 @@
 
                             <div class="product-body">
                                 <div class="product-cat">
-                                    <!-- <a href="#"><%= products[i].name %></a> -->
+                                    <!-- <a href="#"><%= producthe[i].name %></a> -->
                                 </div>
                                 <!-- End .product-cat -->
-                                <h3 class="product-title"><a href="product.html"><%= products[i].name %></a></h3>
+                                <h3 class="product-title"><a href="product.html"><%= producthe[i].name %></a></h3>
                                 <!-- End .product-title -->
                                 <div class="product-price">
-                                    <span class="new-price">$<%= products[i].price %></span>
+                                    <span class="new-price">$<%= producthe[i].price %></span>
                                     <!-- <span class="old-price">Was $290.00</span> -->
                                 </div>
                                 <!-- End .product-price -->
@@ -364,28 +367,34 @@
                             }'
                 >
                     <!-- product............................................................................................ -->
-                    <% for(var i=5;i<10;i++){%>
+                    <% for(var i=0;i<productsp.length;i++){%>
                     <div class="product">
                         <figure class="product-media">
-                            <span class="product-label label-new">New</span>
-                            <a href="/single-product?id=<%= products[i]._id%>">
-                                <% if(products[i].image) { %>
-                                <img src="<%= products[i].image[0] %>" alt="img" class="product-image" />
+                            <span class="product-label label-new">offer <%= offersp.discount%>%</span>
+                            <a href="/single-product?id=<%= productsp[i]._id%>">
+                                <% if(productsp[i].image) { %>
+                                <img src="<%= productsp[i].image[0] %>" alt="img" class="product-image" />
                                 <% }else{ %> Image Not Found <% } %>
                             </a>
 
                             <div class="product-action-vertical">
                                 <form onsubmit="return false">
-                                    <button class="btn-product-icon btn-wishlist btn-expandable" onclick="addtowishlist('<%= products[i]._id %>','<%= products[i].price %>')" type="submit"><span>add to wishlist</span></button>
+                                    <button class="btn-product-icon btn-wishlist btn-expandable" onclick="addtowishlist('<%= productsp[i]._id %>','<%= productsp[i].price %>')" type="submit"><span>add to wishlist</span></button>
                                 </form>
+
+                               
+                                
 
                             </div>
                             <!-- End .product-action-vertical -->
 
                             <div class="product-action">
                                 <form onsubmit="return false">
-                                    <button class="btn-product btn-cart" title="Add to cart" onclick="addtocart('<%= products[i]._id %>','<%= products[i].price %>')" type="submit"><span>add to cart</span></button>
-                                    </form>
+                                    <button class="btn-product btn-cart" title="Add to cart" onclick="addtocart('<%= productsp[i]._id %>','<%= productsp[i].price %>')" type="submit"><span>add to cart</span></button>
+                                </form>
+
+                                
+                                
                             </div>
                             <!-- End .product-action -->
                         </figure>
@@ -396,9 +405,9 @@
                                 <!-- <a href="#">Appliances</a> -->
                             </div>
                             <!-- End .product-cat -->
-                            <h3 class="product-title"><a href="product.html"><%= products[i].name%></a></h3>
+                            <h3 class="product-title"><a href="product.html"><%= productsp[i].name%></a></h3>
                             <!-- End .product-title -->
-                            <div class="product-price">$<%= products[i].price %></div>
+                            <div class="product-price">$<%= productsp[i].price %></div>
                             <!-- End .product-price -->
                             <div class="ratings-container">
                                 <div class="ratings">
@@ -489,21 +498,22 @@
                             }'
                 >
                     <!-- product....................................... -->
-                    <% for(var i=10;i<15;i++){%>
-
+                    <% for(var i=0;i<productwa.length;i++){%>
+                
                     <div class="product">
                         <figure class="product-media">
                             <span class="product-label label-new">New</span>
-                            <a href="/single-product?id=<%= products[i]._id%>">
-                                <% if(products[i].image) { %>
-                                <img src="<%= products[i].image[0] %>" alt="img" class="product-image" />
+                           
+                            <a href="/single-product?id=<%= productwa[i]._id%>">
+                                <% if(productwa[i].image) { %>
+                                <img src="<%= productwa[i].image[0] %>" alt="img" class="product-image" />
                                 <% }else{ %> Image Not Found <% } %>
                             </a>
 
                             <div class="product-action-vertical">
                                
                                     <form onsubmit="return false">
-                                        <button class="btn-product-icon btn-wishlist btn-expandable" onclick="addtowishlist('<%= products[i]._id %>','<%= products[i].price %>')" type="submit"><span>add to wishlist</span></button>
+                                        <button class="btn-product-icon btn-wishlist btn-expandable" onclick="addtowishlist('<%= productwa[i]._id %>','<%= productwa[i].price %>')" type="submit"><span>add to wishlist</span></button>
                                     </form>
 
                             </div>
@@ -511,7 +521,7 @@
 
                             <div class="product-action">
                                 <form onsubmit="return false">
-                                <button class="btn-product btn-cart" title="Add to cart" onclick="addtocart('<%= products[i]._id %>','<%= products[i].price %>')" type="submit"><span>add to cart</span></button>
+                                <button class="btn-product btn-cart" title="Add to cart" onclick="addtocart('<%= productwa[i]._id %>','<%= productwa[i].price %>')" type="submit"><span>add to cart</span></button>
                                 </form>
                             </div>
 
@@ -524,9 +534,9 @@
                                 <!-- <a href="#">Tables</a> -->
                             </div>
                             <!-- End .product-cat -->
-                            <h3 class="product-title"><a href="product.html"><%= products[i].name %></a></h3>
+                            <h3 class="product-title"><a href="product.html"><%= productwa[i].name %></a></h3>
                             <!-- End .product-title -->
-                            <div class="product-price">$<%= products[i].price %></div>
+                            <div class="product-price">$<%= productwa[i].price %></div>
                             <!-- End .product-price -->
                             <div class="ratings-container">
                                 <div class="ratings">
@@ -559,7 +569,8 @@
         <!-- End .tab-content -->
     </div>
     <!-- End .container -->
-
+    </div>
+    <!-- **************************** -->
     <div class="mb-3"></div>
     <!-- End .mb-3 -->
 
@@ -578,6 +589,7 @@
     }
 
             function addtocart(i,p) {
+              
               let productid = document.getElementById("productid")
               let productprice = document.getElementById("productprice")
 
@@ -631,6 +643,86 @@
                 console.error('Error sending PUT request:', error);
             });
         }
+
+        function productsearch(){        
+        
+        const value = document.getElementById("searchValue").value
+
+        fetch("/poduct/search", {
+                method: "post",
+                headers: {
+                    "Content-Type": "application/json",
+                    // Add any other headers here if needed
+                },
+                body: JSON.stringify({ va: value }),
+            })
+                .then((response) => {
+                    console.log("5....");
+                    const result = response.json();
+                    // console.log(result);
+                    return result;
+                })
+                .then((data) => {
+                    console.log("data==" + data);
+
+                    resultcall(data);
+                })
+                .catch((err) => console.log(err));
+
+
+        console.log(value)
+    }
+
+        //*********************** Resultcall ***********************//
+
+        function resultcall(data) {
+        let productdiv = document.getElementById("sample");
+
+        productdiv.innerHTML = "";
+
+        data.forEach((element) => {
+            console.log(element.image);
+            const item = ` 
+        <div class="col-6 col-md-4 col-xl-3">
+                                    <div class="product">
+                                        <figure class="product-media">
+                                    <span class="product-label label-new">New</span>
+
+                                    <a href="/single-product?id=${element._id}">
+                                        <img src="${element.image[0]}" alt="img" class="product-image" />
+                                      
+                                    </a>
+
+                                    <div class="product-action-vertical">
+                                        <a href="#" class="btn-product-icon btn-wishlist btn-expandable"><span>add to wishlist</span></a>
+                                    </div><!-- End .product-action-vertical -->
+
+                                    <div class="product-action">
+                                        <a href="#" class="btn-product btn-cart" title="Add to cart"><span>add to cart</span></a>
+                                    </div><!-- End .product-action -->
+                                </figure><!-- End .product-media -->
+
+                                <div class="product-body">
+                                    <div class="product-cat">
+                                        <!-- <a href="#">Appliances</a> -->
+                                    </div><!-- End .product-cat -->
+                                    <h3 class="product-title"><a href="product.html">${element.name}</a></h3><!-- End .product-title -->
+                                    <div class="product-price">
+                                        ${element.price}
+                                    </div><!-- End .product-price -->
+                                    <div class="ratings-container">
+                                        <div class="ratings">
+                                            <div class="ratings-val" style="width: 80%;"></div><!-- End .ratings-val -->
+                                        </div><!-- End .ratings -->
+                                        <span class="ratings-text">( 12 Reviews )</span>
+                                    </div><!-- End .rating-container -->
+                                </div><!-- End .product-body -->
+                                    </div><!-- End .product -->
+                                </div><!-- End .col-sm-6 col-md-4 col-xl-3 -->
+        `;
+            productdiv.innerHTML += item;
+        });
+    }
 
 </script>
 

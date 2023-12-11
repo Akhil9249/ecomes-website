@@ -22,8 +22,10 @@
 							    <div class="tab-pane fade" id="signin-2" role="tabpanel" aria-labelledby="signin-tab-2">
 							    	
 							    </div><!-- .End .tab-pane -->
+								<div id="toast"></div>
 							    <div class="tab-pane fade show active" id="register-2" role="tabpanel" aria-labelledby="register-tab-2">
-							    	<form action="/api/users" method="POST" id="add_user" onsubmit="return toggleLabel()">
+							    	<!-- <form action="/api/users" method="POST" id="add_user"  > -->
+									<form onsubmit="return false" id="add_user" >
 							    		<div class="form-group">
 							    			<label for="register-email">Name *</label>
 							    			<input type="text" class="form-control" id="register-name" name="name" >
@@ -38,8 +40,9 @@
 
                                         <div class="form-group">
 							    			<label for="register-email">Mobile Number *</label>
-							    			<input type="text" class="form-control" id="register-number" name="mobile" >
+							    			<input type="text" class="form-control" id="register-number" name="mobile" onkeyup="checknumber()"  onblur="checknumberbl()">
 											<p id="myLabelmob" style="color: rgb(218, 30, 30);">Please fill mobilenumber....</p>
+											<p id="numberexist" style="color: rgb(218, 30, 30);">Number exist....</p>
 							    		</div><!-- End .form-group -->
 
 							    		<div class="form-group">
@@ -55,11 +58,10 @@
 										<!-- End .form-group -->
 
 							    		<div class="form-footer">
-							    			<button type="submit" class="btn btn-outline-primary-2">
+							    			<button type="submit" class="btn btn-outline-primary-2" onclick="creatUser()">
 			                					<span>SIGN UP</span>
 			            						<i class="icon-long-arrow-right"></i>
 			                				</button>
-
 			                				<div class="custom-control custom-checkbox">
 												<input type="checkbox" class="custom-control-input" id="register-policy-2" required>
 												<label class="custom-control-label" for="register-policy-2">I agree to the <a href="#">privacy policy</a> *</label>
@@ -79,6 +81,8 @@
 		
 		<script>
 
+			
+
 			var labelname = document.getElementById("myLabelname");
 			var labelemail = document.getElementById("myLabelemail");			
 			var labelmob = document.getElementById("myLabelmob");
@@ -87,22 +91,62 @@
 			labelemail.style.display = "none"; // Hide the label
 			labelmob.style.display = "none"; // Hide the label
 			labelpass.style.display = "none"; // Hide the label
+			// const signinForm = document.getElementById("signinforms")
+			
+			var numberExist = document.getElementById("numberexist");
+			numberExist.style.display = "none";
+
+			let signinForms = document.getElementById("add_user")
 	
 				
-			function toggleLabel(event) {
+			// function toggleLabel(event) {
+			
+			// 	var namevalue = document.getElementById("register-name");
+			// 	var emailvalue = document.getElementById("register-email-2");			
+			// 	var numbervalue = document.getElementById("register-number");
+			// 	var passwordvalue = document.getElementById("register-password-2");
+	
+			// 	if(namevalue.value == "" || emailvalue.value == ""  || numbervalue.value == "" || passwordvalue.value == ""){
+					
+			// 		// event.preventDefault()
+			// 		if(namevalue.value == ""){
+						
+			// 			labelname.style.display = "block"
+			// 		}
+			// 		if(emailvalue.value == ""){
+							
+			// 			labelemail.style.display = "block"
+			// 		}
+			// 		if(numbervalue.value == ""){
+							
+			// 			labelmob.style.display = "block"
+			// 		}
+			// 		if(passwordvalue.value == ""){
+							
+			// 			labelpass.style.display = "block"
+			// 		}
+						
+					
+			// 		return false;
+						
+					
+			// 	}
+			// }
+
+
+
 		
-				// var labelemail = document.getElementById("myLabelemail");
-				// var labelpass = document.getElementById("myLabelpass");
-	
-				
-				var namevalue = document.getElementById("register-name");
+		
+		signinForms.addEventListener("submit",(event)=>{
+		
+			var namevalue = document.getElementById("register-name");
 				var emailvalue = document.getElementById("register-email-2");			
 				var numbervalue = document.getElementById("register-number");
 				var passwordvalue = document.getElementById("register-password-2");
 	
 				if(namevalue.value == "" || emailvalue.value == ""  || numbervalue.value == "" || passwordvalue.value == ""){
 					
-					// event.preventDefault()
+					event.preventDefault()
 					if(namevalue.value == ""){
 						
 						labelname.style.display = "block"
@@ -125,9 +169,144 @@
 						
 					
 				}
-			}
+
+		})
+
+	var arr = 0
+
+	function checknumber(){
+		
+		let num = document.getElementById("register-number").value
+		 
+			arr=arr+1
+
+		console.log(arr+"arr")
+		
+		
+		if(arr<10){
+			return
+		}
+		console.log(arr+"arr")
+
+
+			fetch("/check/phoneup", {
+                method: "post",
+                headers: {
+                    "Content-Type": "application/json",
+                    // Add any other headers here if needed
+                },
+                body: JSON.stringify({ number : num }),
+            })
+                .then((response) => {
+
+                    const result = response.json();
+                    console.log(result);
+                    return result;
+                })
+                .then((data) => {
+
+					numbercall(data)
+
+                })
+                .catch((err) => console.log(err));
+
+	}
+
+	function checknumberbl(){
+
+		let num = document.getElementById("register-number").value
+
+			fetch("/check/phoneup", {
+                method: "post",
+                headers: {
+                    "Content-Type": "application/json",
+                    // Add any other headers here if needed
+                },
+                body: JSON.stringify({ number : num }),
+            })
+                .then((response) => {
+
+                    const result = response.json();
+                    console.log(result);
+                    return result;
+                })
+                .then((data) => {
+
+					numbercall(data)
+
+                })
+                .catch((err) => console.log(err));
+		
+	}
+
+	function numbercall(value){
+
+		if(value[0]?.email == undefined){
 	
-			</script>
+		}else{
+			numberExist.style.display = "block"
+			console.log(value[0].email)
+		}
+	}
+
+
+
+	function creatUser(){
+
+			let nameVal = document.getElementById("register-name").value
+			let emailVal = document.getElementById("register-email-2").value
+			let numberVal = document.getElementById("register-number").value
+			let passwordVal = document.getElementById("register-password-2").value
+			console.log(nameVal,emailVal,numberVal,passwordVal)
+
+			fetch("/api/users", {
+                method: "post",
+                headers: {
+                    "Content-Type": "application/json",
+                    // Add any other headers here if needed
+                },
+                body: JSON.stringify({ name :nameVal, email:emailVal, mobile:numberVal, password:passwordVal }),
+            })
+                .then((response) => {
+
+					console.log("zero")
+                    const result = response.json();
+                    console.log(result);
+                    return result;
+                })
+                .then((data) => {
+					console.log("first")
+					showToast("Registration successful")
+
+                })
+                .catch((err) => console.log(err));
+
+	}
+
+	// Function to create and display a toast
+    function showToast(message) {
+		console.log("second")
+        // Create a new div element for the toast
+        var toast = document.createElement('div');
+        toast.id = 'toast';
+        toast.textContent = message;
+
+        // Append the toast to the body
+        document.body.appendChild(toast);
+
+        // Show the toast
+        toast.style.display = 'block';
+
+        // Hide the toast after a delay (e.g., 3 seconds)
+        setTimeout(function() {
+            toast.style.display = 'none';
+			
+        }, 5000);
+    }
+
+
+	
+</script>
 
         
         <%- include('../partials/user-footer') %>        

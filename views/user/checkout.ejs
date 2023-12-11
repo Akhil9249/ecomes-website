@@ -16,16 +16,24 @@
             	<div class="checkout">
 	                <div class="container">
             			<div class="checkout-discount">
-            				<form action="#">
-        						<input type="text" class="form-control"  id="checkout-discount-input">
-            					<label for="checkout-discount-input" class="text-truncate">Have a coupon? <span>Click here to enter your code</span></label>
-            				</form>
+            				<form action="" method="" onsubmit="couponCheck()">
+								<div style="display: flex;">
+									<div>
+										<input type="text" class="form-control" name="coupon"  id="checkout-discount-input">
+									<label for="checkout-discount-input" class="text-truncate">Have a coupon?</label>
+									</div>
+									<div >
+										<button type="submit" class="btn btn-primary mr-2" style="width: 2px;">Submit</button>
+									</div>
+								</div>	
+							</form>
+							<div id="toast"></div>
             			</div><!-- End .checkout-discount -->
             			
 		                	<div class="row">
 		                		<div class="col-lg-7">
-									
-								<form action="/oddersuccesspost" method="post">	
+									<!-- <form action="/oddersuccesspost" method="post" onsu>	 -->
+								<form  onsubmit=" odderPost();return false">	
 									<div class="summary">
 		                				<h3 class="summary-title">Your Order</h3><!-- End .summary-title -->
 
@@ -74,9 +82,7 @@
 																<!-- <div class="" > -->
 																	
 																	<% if( products[i]._id.toString()  ==  userdt.cart.item[j].productId.toString() ) { %>
-																		<!-- <span onclick="priceinc('<%= products[i]._id %>','<%= sessval %>',-1)"><button>-</button></span> &nbsp&nbsp; -->
 																		<span id="sample" ><%= userdt.cart.item[j].qty %></span>&nbsp&nbsp;
-																		<!-- <span onclick="priceinc('<%= products[i]._id %>','<%= sessval %>',1)"><button>+</button></span> -->
 																		<% } %>	
 				
 											
@@ -94,24 +100,17 @@
 				
 																<%}%>
 															</td>
-															
-				
-				
-															<!-- <td class="remove-col" onclick="prremove('<%= products[i]._id %>','<%= sessval %>')"><button class="btn-remove"><i class="icon-close"></i></button></td> -->
 														</tr>
 														
 				
 														<%}%>
-
-													
-													<!--...................... ................ -->
 
 		                						</tr>
 
 		                						
 		                						<tr class="summary-subtotal">
 		                							<td>Subtotal:</td>
-		                							<td><%= total %></td>
+		                							<td><%= userdt.cart.totalPrice %></td>
 		                						</tr><!-- End .summary-subtotal -->
 		                						<tr>
 		                							<td>Shipping: 0</td>
@@ -119,8 +118,11 @@
 		                						</tr>
 		                						<tr class="summary-total">
 		                							<td>Total:</td>
-		                							<td><%= total %></td>
+		                							<td id='payable'><%= userdt.cart.totalPrice %></td>
 		                						</tr><!-- End .summary-total -->
+												<tr>
+													
+												</tr>
 		                					</tbody>
 		                				</table><!-- End .table table-summary -->
 
@@ -134,7 +136,7 @@
 										            <h2 class="card-title">
 
 										                <p class="collapsed" role="button" data-toggle="collapse" href="#collapse-3" aria-expanded="false" aria-controls="collapse-3">
-										                  <input type="radio" placeholder="" name="payment" value="Cash on delivery">  Cash on delivery
+										                  <input type="radio"  onclick="payments('Cash on delivery')" placeholder="" name="payment" value="Cash on delivery">  Cash on delivery
 														</p>
 										            </h2>
 										        </div><!-- End .card-header -->
@@ -148,7 +150,7 @@
 										        <div class="card-header" id="heading-4">
 										            <h2 class="card-title">
 										                <p class="collapsed" role="button" data-toggle="collapse" href="#collapse-4" aria-expanded="false" aria-controls="collapse-4">
-															<input type="radio"  placeholder="" name="payment" value="Razorpay"> Razorpay <small class="float-right paypal-link">What is Razorpay?</small>
+															<input type="radio"  onclick="payments('Razorpay')"  placeholder="" name="payment" value="Razorpay"> Razorpay <small class="float-right paypal-link">What is Razorpay?</small>
 														</p>
 										            </h2>
 										        </div><!-- End .card-header -->
@@ -162,7 +164,7 @@
 										    
 										</div><!-- End .accordion -->
 										<!-- <a href="/oddersuccess"> -->
-											<button type="submit" class="btn btn-outline-primary-2 btn-order btn-block">
+											<button id="rzp-button" type="submit" class="btn btn-outline-primary-2 btn-order btn-block">
 											<span class="btn-text">Place Order</span>
 											<span class="btn-hover-text">Proceed to Checkout</span>
 										</button>
@@ -170,9 +172,28 @@
 										
 		                				
 		                			</div><!-- End .summary -->	
-
+									<table class="table table-summary" style="border: solid 1px;">
+										<thead>
+											<tr>
+											<th style="text-align: center;">Coupon Name</th>
+											<th style="text-align: center;">Coupon Code</th>
+											<th style="text-align: center;">Offer Percentage</th>
+											</tr>
+											
+										</thead>
+										<tbody>
+											<% for(var i=0;i<coupon.length;i++){%>
+											<tr>
+												<td style="text-align: center;"><%= coupon[i].name %></td>
+												<td style="text-align: center;"><%= coupon[i].code %></td>
+												<td style="text-align: center;"><%= coupon[i].percent %></td>
+											</tr>
+											<%}%>
+										</tbody>	
+								</table>
 								
 								</div><!-- End .col-lg-9 -->
+									
 		                		<aside class="col-lg-5">
 
 
@@ -198,7 +219,7 @@
 													<a href="#">Edit <i class="icon-edit"></i></a></p>
 												</div><!-- End .card-body -->
 												<label for="" style="text-align: center;">Select Address</label>
-												<input type="radio" value="<%= productad[i]._id %>" name="addresid">
+												<input type="radio" onclick="address('<%= productad[i]._id%>')" value="<%= productad[i]._id %>" name="addresid">
 												<br>
 											</div><!-- End .card-dashboard -->
 											
@@ -265,5 +286,147 @@
                 </div><!-- End .checkout -->
             </div><!-- End .page-content -->
         </main><!-- End .main -->
+		<script>
+
+	let addressval ;
+    let paymentval ;
+
+	function address(value){
+		addressval=value
+		console.log(addressval+"addressval")
+	}
+
+	function payments(value){
+		paymentval=value
+		console.log(paymentval+"payment")
+	}
+
+			function couponCheck(){
+				let cop = document.getElementById("checkout-discount-input").value
+				console.log(cop+"cop")
+				fetch('/couponCodeCheck', {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ coupon:cop}) // Replace this with your data
+            })
+            .then(response => {
+                // Handle the response as needed
+                console.log('PUT request sent');
+            })
+            .catch(error => {
+                // Handle any errors
+                console.error('Error sending PUT request:', error);
+            });
+			}
+
+			function odderPost(){
+
+				console.log(addressval)
+				console.log(paymentval)
+				
+				fetch("/oddersuccesspost", {
+                method: "post",
+                headers: {
+                    "Content-Type": "application/json",
+                    // Add any other headers here if needed
+                },
+                body: JSON.stringify({addresid:addressval,payment:paymentval}),
+            })
+                .then((response) => {
+                    return response.json();
+                
+                })
+                .then((data) => {
+                    console.log(data);
+					// if(data==quentityLess){
+					// 	quentityLess()
+					// }
+
+					rpcall(data)
+					// Example usage:
+    				// showToast('odder successfull!');
+                })
+                .catch((err) => console.log(err));
+				
+
+			}
+
+			
+			
+
+			// function checkOutBlock(data, payment) {
+
+               
+			// 	}
+
+				function rpcall(data){
+					var options = {
+    "key": "rzp_test_zVBhrL4CVfIezv", // Enter the Key ID generated from the Dashboard
+    "amount": "50000", // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+    "currency": "INR",
+    "name": "Acme Corp",
+    "description": "Test Transaction",
+    "image": "https://example.com/your_logo",
+    "order_id": data.id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
+    "handler": function (response){
+        alert(response.razorpay_payment_id);
+        alert(response.razorpay_order_id);
+        alert(response.razorpay_signature)
+    },
+    "prefill": {
+        "name": "Gaurav Kumar",
+        "email": "gaurav.kumar@example.com",
+        "contact": "9000090000"
+    },
+    "notes": {
+        "address": "Razorpay Corporate Office"
+    },
+    "theme": {
+        "color": "#3399cc"
+    }
+};
+
+var rzp1 = new Razorpay(options);
+rzp1.on('payment.failed', function (response){
+        alert(response.error.code);
+        alert(response.error.description);
+        alert(response.error.source);
+        alert(response.error.step);
+        alert(response.error.reason);
+        alert(response.error.metadata.order_id);
+        alert(response.error.metadata.payment_id);
+});
+rzp1.open();
+				}
+			
+		</script>
+
+		
+<script>
+    // Function to create and display a toast
+    function showToast(message) {
+        // Create a new div element for the toast
+        var toast = document.createElement('div');
+        toast.id = 'toast';
+        toast.textContent = message;
+
+        // Append the toast to the body
+        document.body.appendChild(toast);
+
+        // Show the toast
+        toast.style.display = 'block';
+
+        // Hide the toast after a delay (e.g., 3 seconds)
+        setTimeout(function() {
+            toast.style.display = 'none';
+        }, 5000);
+    }
+
+    
+</script>
+		
+
 
         <%- include('../partials/user-footer') %>

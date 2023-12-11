@@ -23,7 +23,8 @@
 							    	
 							    </div><!-- .End .tab-pane -->
 							    <div class="tab-pane fade show active" id="register-2" role="tabpanel" aria-labelledby="register-tab-2">
-							    	<form action="/signin" method="post" onsubmit=" toggleLabel()">
+							    	<!-- onclick="login()" -->
+									<form action="/signin" method="post"  onsubmit=" " id="signinform">
 							    		<div class="form-group">
 							    			<label for="singin-email-2">Email address *</label>
 							    			<input type="text" onblur="toggleLabelemail()" class="form-control" id="singin-email-2" name="email" >
@@ -60,11 +61,15 @@
         </main><!-- End .main -->
 
 		<script>
-
+		let emailvalue = document.getElementById("singin-email-2").value;
+		let passvalue = document.getElementById("singin-password-2").value;
 		var labelemail = document.getElementById("myLabelemail");
 		var labelpass = document.getElementById("myLabelpass");
 		labelemail.style.display = "none"; // Hide the label
 		labelpass.style.display = "none"; // Hide the label
+	
+		let signinForm = document.getElementById("signinform")
+		
 
 		function toggleLabelemail(event) {		
             var labelemail = document.getElementById("myLabelemail");
@@ -94,26 +99,95 @@
 
 
 
-		function toggleLabel(event) {		
+		// function toggleLabel(event) {		
             // var labelemail = document.getElementById("myLabelemail");
 			// var labelpass = document.getElementById("myLabelpass");
 
 
+			// var emailvalue = document.getElementById("singin-email-2");
+			// var passwordvalue = document.getElementById("singin-password-2");
+
+			// if(emailvalue.value == "" || passwordvalue.value == ""){
+				
+
+			// 	if(emailvalue.value == ""){
+			// 		labelemail.style.display = "block"
+			// 	}
+			// 	if(passwordvalue.value == ""){
+			// 		labelpass.style.display = "block"
+			// 	}
+			// 	//  event.preventDefault()
+				
+			// 	return false;
+				
+			// }
+        // }
+
+		signinForm.addEventListener("submit",(event)=>{
+			
 			var emailvalue = document.getElementById("singin-email-2");
 			var passwordvalue = document.getElementById("singin-password-2");
 
 			if(emailvalue.value == "" || passwordvalue.value == ""){
-
+				
+				event.preventDefault()
 				if(emailvalue.value == ""){
 					labelemail.style.display = "block"
 				}
 				if(passwordvalue.value == ""){
 					labelpass.style.display = "block"
 				}
+				  
+				
 				return false;
 				
 			}
-        }
+		})
+
+
+		function login(){
+			console.log("login")
+			fetch("/signin", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    // Add any other headers here if needed
+                },
+                body: JSON.stringify({email:emailvalue,password:passvalue}),
+            })
+                .then((response) => {
+                    return response.json();               
+                })
+                .then((data) => {
+                    console.log(data);
+					// rpcall(data)
+					// Example usage:
+    				showToast('odder successfull!');
+					// window.location.href = '/';
+                })
+                .catch((err) => console.log(err));
+		}
+
+		 // Function to create and display a toast
+		 function showToast(message) {
+        // Create a new div element for the toast
+        var toast = document.createElement('div');
+        toast.id = 'toast';
+        toast.textContent = message;
+
+        // Append the toast to the body
+        document.body.appendChild(toast);
+
+        // Show the toast
+        toast.style.display = 'block';
+
+        // Hide the toast after a delay (e.g., 3 seconds)
+        setTimeout(function() {
+            toast.style.display = 'none';
+        }, 5000);
+    }
+
+
 
 		</script>
 

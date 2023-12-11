@@ -2,41 +2,60 @@ const axios = require("axios");
 const Userdb = require("../models/userModel");
 const Productdb = require("../models/productModel");
 const Adressdb = require("../models/addressModel");
-const Ordersdb = require("../models/ordersModel")
+const Ordersdb = require("../models/ordersModel");
+const Offer = require("../models/offerModel");
+const Coupon = require("../models/couponModel");
+const Dashdb = require("../models/dashModel");
+const Razorpay = require("razorpay");
 
 //1
+
 const home = async (req, res) => {
+    const offerhf = await Offer.findOne({ name: "HEADPHONE" });
+    const offersp = await Offer.findOne({ name: "SPEAKER" });
+
+    const productwa = await Productdb.find({ category: "WATCH", isAvailable: true });
+    const producthe = await Productdb.find({ category: "HEADPHONE", isAvailable: true });
+    const productsp = await Productdb.find({ category: "SPEAKER", isAvailable: true });
+    const products = await Productdb.find();
+    let prowish = [];
+    let procart = [];
+
     if (req.session.isAvailable) {
         const id = req.session.isAvailable;
-        console.log(id + "...............");
         const value = await Userdb.find({ _id: id });
-        console.log(value);
+
         let val = {
             v: 1,
         };
+        let user = await Userdb.findById({ _id: req.session.isAvailable });
+        const wish = user.wishlist.item.map((val) => val.productId);
+        prowish = await Productdb.find({ _id: { $in: wish } });
 
-        axios
-            .get("http://localhost:3000/user/check/product")
-            .then((response) => {
-                res.render("home", { products: response.data, details: value, test: val });
-            })
-            .catch((err) => {
-                res.send(err);
-            });
+        console.log(prowish + "prowish");
+
+        const cart = user.cart.item.map((val) => val.productId);
+        procart = await Productdb.find({ _id: { $in: cart } });
+        console.log(procart + " procart");
+
+        res.render("home", {
+            productwa,
+            producthe,
+            productsp,
+            products,
+            details: value,
+            test: val,
+            offerhf,
+            offersp,
+            prowish,
+            procart,
+        });
     } else {
         let val = {
             v: 0,
         };
 
-        axios
-            .get("http://localhost:3000/user/check/product")
-
-            .then((response) => {
-                res.render("home", { products: response.data, test: val });
-            })
-            .catch((err) => {
-                res.send(err);
-            });
+        res.render("home", { productwa, producthe, productsp, products, test: val, offerhf, offersp, prowish, procart });
     }
 };
 
@@ -90,15 +109,16 @@ const logout = (req, res, next) => {
 };
 
 //6
-const product = (req, res) => {
+const product = async (req, res) => {
     let val = {
         v: 0,
     };
+    const producttop = await Productdb.find();
     axios
         .get("http://localhost:3000/check/product")
         .then((response) => {
             console.log("end");
-            res.render("product", { products: response.data, test: val });
+            res.render("product", { producttop, products: response.data, test: val });
         })
         .catch((err) => {
             res.send(err);
@@ -164,7 +184,7 @@ const cart = async (req, res) => {
 
         let flultotal = 0;
 
-        user = await Userdb.findById({ _id: req.session.isAvailable });
+        user = await Userdb.findByIdAndUpdate({ _id: req.session.isAvailable });
         const value = user.cart.item.map((val) => val.productId);
 
         const fultot = user.cart.item.map((val) => {
@@ -176,12 +196,10 @@ const cart = async (req, res) => {
             return tot + val;
         }, 0);
 
+        user.cart.totalPrice = flultotal;
+        user.save();
+
         pro = await Productdb.find({ _id: { $in: value } });
-        // console.log(pro + "...........pro");
-        // console.log(val + "...........val");
-        // console.log(sess + "...........sess");
-        // console.log(user + "...........user");
-        // console.log(flultotal + "...........flultotal");
 
         res.render("cart", { products: pro, test: val, sessval: sess, userdt: user, total: flultotal });
     } else {
@@ -198,9 +216,9 @@ const dashboard = async (req, res) => {
         const id = req.session.isAvailable;
         const user = await Adressdb.find({ userId: id });
         const value = await Userdb.find({ _id: id });
-        console.log(value);
-
-        res.render("dashboard", { products: user, details: value, test: val });
+        const orders = await Ordersdb.find({ userId: id });
+        const product = await Productdb.find({});
+        res.render("dashboard", { products: user, details: value, test: val, orders, product });
     } else {
         res.redirect("/login");
     }
@@ -212,7 +230,7 @@ const forgotnumber = (req, res) => {
         v: 0,
     };
 
-    res.render("forgot-number", { user: 0,test: val });
+    res.render("forgot-number", { user: 0, test: val });
 };
 
 //12
@@ -220,7 +238,7 @@ const newpassword = (req, res) => {
     let val = {
         v: 0,
     };
-    res.render("newpassword",{test: val});
+    res.render("newpassword", { test: val });
 };
 
 //13
@@ -233,11 +251,8 @@ const checknumber = async (req, res) => {
         const check = await Userdb.findOne({ mobile: req.body.mobile });
 
         if (check.mobile == data.mobile) {
-            console.log(check);
             req.session.val = check._id;
-            console.log(req.session.val + "req.session.id");
             // req.session.isAvailable = req.body.email;
-
             res.redirect("/otppage");
         }
     } catch (error) {
@@ -286,12 +301,9 @@ const otppage = (req, res) => {
 
 //16
 const otppost = (req, res) => {
-    // console.log(req.session.myValue)
     const result = req.body.first + req.body.second + req.body.third + req.body.fourth;
-    console.log(result);
     if (req.session.myValue == result) {
         req.session.myValue = "";
-        console.log(req.session.val + "............");
         res.redirect("/newpassword");
     } else {
         req.session.myValue = "";
@@ -301,101 +313,81 @@ const otppost = (req, res) => {
 
 //17
 const passwordchange = async (req, res) => {
-    console.log(req.body.password1);
     const pass = req.body.password1;
-
-    console.log(req.body.password2);
     const value = req.session.val;
     const user = await Userdb.findByIdAndUpdate({ _id: value }, { $set: { password: pass } });
-    console.log(user + "............+++++");
     await user.save();
     res.redirect("/login");
 };
 
 //18
-//****************** addcart ******************//
-// const addcart = (req, res) => {
-//     console.log("start")
-//     if (req.session.isAvailable) {
-//         console.log(req.session.isAvailable)
-//         console.log(req.query.id)
-//         console.log(req.query.price)
-//         axios
-//         .put("http://localhost:3000/addcart",{ params: { id: 10} })
-//         .then((response) => {
-//             res.render("cart");
-//         })
-//         .catch((err) => {
-//             res.send(err);
-//         });
-//     } else {
-//         res.render("login");
-//     }
-// };
-//****************** addcart ******************//
-
-//18
 const addcartput = async (req, res) => {
-    // console.log("2");
     if (req.session.isAvailable) {
-        
         const id = req.session.isAvailable;
-    
+
         const productId = req.body.id;
-        
+
         const price = req.body.price;
-        
+        let users = await Userdb.findById({ _id: req.session.isAvailable });
+        let alredycart = 0;
+        const cart = users.cart.item.find((val) => {
+            if (productId == val.productId) {
+                alredycart = 1;
+                return alredycart;
+            }
+        });
 
-        const singletotal = req.body.price;
-        console.log(price + "isAvailable");
-
-        const qty = 1;
-
-        const user = await Userdb.findByIdAndUpdate(id);
-        console.log(user);
-        if (!user) {
-            throw new Error("User not found");
+        if (alredycart == 0) {
+            const singletotal = req.body.price;
+            const qty = 1;
+            const user = await Userdb.findByIdAndUpdate(id);
+            if (!user) {
+                throw new Error("User not found");
+            }
+            user.cart.item.push({ productId, qty, price, singletotal });
+            user.cart.totalPrice += price * qty;
+            await user.save();
         }
-        console.log(user);
-
-        user.cart.item.push({ productId, qty, price, singletotal });
-        user.cart.totalPrice += price * qty;
-        await user.save();
     } else {
         res.render("login");
     }
 };
 
+//enddddddd
+// const addcartend = async (req, res) => {
+//     console.log("adddddenddddd")
+//     res.send("haiii")
+// };
+
 //19
 const addwishlistput = async (req, res) => {
-    console.log("2");
     if (req.session.isAvailable) {
-        console.log("3");
         const id = req.session.isAvailable;
-        console.log(id + "id");
-
         const productId = req.body.id;
-        console.log(productId + "productId");
-
         const price = req.body.price;
-        console.log(price + "isAvailable");
 
         const qty = 1;
-        //    const price = 2500
 
+        //    const price = 2500
         // const id = req.params.id;
         // Userdb.findByIdAndUpdate(id, req.body, { useFindAndModify: false })
 
         const user = await Userdb.findByIdAndUpdate(id);
-        console.log(user);
         if (!user) {
             throw new Error("User not found");
         }
-        console.log(user);
+        let alredywishlist = 0;
+        const cart = user.wishlist.item.find((val) => {
+            if (productId == val.productId) {
+                alredywishlist = 1;
+                return alredywishlist;
+            }
+        });
 
-        user.wishlist.item.push({ productId, price });
-
-        await user.save();
+        if (alredywishlist == 0) {
+            user.wishlist.item.push({ productId, price });
+            await user.save();
+        }
     } else {
         res.render("login");
     }
@@ -412,15 +404,6 @@ const dashboardpost = (req, res) => {
     }
     console.log(req.session.isAvailable + "isAvailable....");
     if (req.session.isAvailable) {
-        console.log(req.session.isAvailable + "isAvailable");
-        console.log(req.body.name + "fullname");
-        console.log(req.body.number + "number");
-        console.log(req.body.pincode + "pincode");
-        console.log(req.body.state + "state");
-        console.log(req.body.city + "city");
-        console.log(req.body.house + "house");
-        console.log(req.body.road + "road");
-
         //new Adress
         const user = new Adressdb({
             userId: req.session.isAvailable,
@@ -457,47 +440,70 @@ const checkout = async (req, res) => {
         };
         let user = {};
 
-
-
         // let arr = [];
 
         let pro = [];
+        let coupon = [];
 
         let userad = {};
 
         let flultotal = 0;
 
         user = await Userdb.findById({ _id: req.session.isAvailable });
+        console.log(user);
         const value = user.cart.item.map((val) => val.productId);
+        console.log(value);
 
-        const fultot = user.cart.item.map((val) => {
-            const res = val.qty * val.price;
+        const fultot = user.cart.item.map(async (valus) => {
+            const res = valus.qty * valus.price;
+            // 88888888888888888888888888888888888888888888888888888888888888888888
+
+            //    let offer = await Offer.find({});
+            //    offer.map((valof)=>{
+            //      if(valus.name == valof.categoryname){
+            //         if(valof.avilable){
+            //         }
+            //      }
+            //    })
+
             return res;
         });
+        // **********************************************
+        // flultotal = fultot.reduce((tot, val) => {
+        //     return tot + val;
+        // }, 0);
 
-        flultotal = fultot.reduce((tot, val) => {
-            return tot + val;
-        }, 0);
+        // user.cart.totalPrice = flultotal
+        // await user.save(user.cart.totalPrice)
+        // **********************************************
 
         pro = await Productdb.find({ _id: { $in: value } });
 
-
- 
         const id = req.session.isAvailable;
-         userad = await Adressdb.find({ userId: id });
+        userad = await Adressdb.find({ userId: id });
 
-        user = await Userdb.findById({ _id: req.session.isAvailable });
-
+        // user = await Userdb.findById({ _id: req.session.isAvailable });
 
         // const value = await Userdb.find({ _id: id });
 
         // res.render("dashboard", { products: user, details: value, test: val });
 
-
         // res.render("cart", { products: pro, test: val, sessval: sess, userdt: user, total: flultotal });
 
-        res.render("checkout", { test: val, productad: userad ,products: pro, sessval: sess ,userdt: user, total: flultotal});
+        // coupon = await Coupon.find({});
+        coupon = await Coupon.find({ usedBy: { $nin: [sess] } });
 
+        //   console.log(coupon)
+
+        res.render("checkout", {
+            test: val,
+            productad: userad,
+            products: pro,
+            sessval: sess,
+            userdt: user,
+            total: flultotal,
+            coupon,
+        });
     } else {
         res.redirect("/login");
     }
@@ -507,8 +513,6 @@ const cartupdat = async (req, res) => {
     const idvalue = req.body.idvalues;
     const sessvalue = req.body.sessvalues;
     const changenum = req.body.change;
-    console.log(changenum + "changenum");
-
     const user = await Userdb.findByIdAndUpdate({ _id: sessvalue });
 
     const index = user.cart.item.indexOf(
@@ -520,47 +524,34 @@ const cartupdat = async (req, res) => {
     console.log(index);
     if (changenum == 1) {
         const quantity = user.cart.item[index].qty;
-
-        console.log(index + "in");
-
         user.cart.item[index].qty++;
-        await user.save()
-        let valp = user.cart.item[index].price
-        let valq = user.cart.item[index].qty
-        user.cart.item[index].singletotal = valp*valq
-        await user.save()
-
-        
+        await user.save();
+        let valp = user.cart.item[index].price;
+        let valq = user.cart.item[index].qty;
+        user.cart.item[index].singletotal = valp * valq;
+        await user.save();
 
         // const prid = user.cart.item[index].productId
-
         // const product = await Productdb.findByIdAndUpdate({ _id: prid });
-
         // product.stock--
-
         // await product.save();
-
         // console.log(product)
     } else {
         const quantity = user.cart.item[index].qty;
 
         user.cart.item[index].qty--;
 
-        await user.save()
+        await user.save();
 
-        let valp = user.cart.item[index].price
-        let valq = user.cart.item[index].qty
-        user.cart.item[index].singletotal = valp*valq
-        await user.save()
+        let valp = user.cart.item[index].price;
+        let valq = user.cart.item[index].qty;
+        user.cart.item[index].singletotal = valp * valq;
+        await user.save();
 
         // const prid = user.cart.item[index].productId
-
         // const product = await Productdb.findByIdAndUpdate({ _id: prid });
-
         // product.stock++
-
         // await product.save();
-
         // console.log(product)
     }
 
@@ -570,8 +561,6 @@ const cartupdat = async (req, res) => {
             if (!data) {
                 res.status(404).send({ message: "Not found user with id" });
             } else {
-                console.log("4");
-                console.log(data);
                 res.json(100);
             }
         })
@@ -591,19 +580,13 @@ const cartremove = async (req, res) => {
             return val.productId == idvalue;
         })
     );
-
-    console.log(index);
-
     user.cart.item.splice(index, 1);
-
     await user.save();
-
     Userdb.findByIdAndUpdate({ _id: sessvalue })
         .then((data) => {
             if (!data) {
                 res.status(404).send({ message: "Not found user with id" });
             } else {
-                console.log(data);
                 res.json(data);
             }
         })
@@ -624,8 +607,6 @@ const wishlistremove = async (req, res) => {
         })
     );
 
-    console.log(index);
-
     user.wishlist.item.splice(index, 1);
 
     await user.save();
@@ -635,7 +616,6 @@ const wishlistremove = async (req, res) => {
             if (!data) {
                 res.status(404).send({ message: "Not found user with id" });
             } else {
-                console.log(data);
                 res.json(data);
             }
         })
@@ -644,11 +624,7 @@ const wishlistremove = async (req, res) => {
         });
 };
 
-
-
 const oddersuccess = async (req, res) => {
-
-
     if (req.session.isAvailable) {
         const sess = req.session.isAvailable;
         let val = {
@@ -657,8 +633,6 @@ const oddersuccess = async (req, res) => {
 
         let user = {};
 
-
-
         // let arr = [];
 
         let pro = [];
@@ -666,8 +640,6 @@ const oddersuccess = async (req, res) => {
         let userad = {};
 
         let flultotal = 0;
-
-// ...........................
 
         user = await Userdb.findById({ _id: req.session.isAvailable });
         const value = user.cart.item.map((val) => val.productId);
@@ -683,139 +655,208 @@ const oddersuccess = async (req, res) => {
 
         pro = await Productdb.find({ _id: { $in: value } });
 
-// ...........................
- 
         const id = req.session.isAvailable;
-         userad = await Adressdb.find({ userId: id });
+        userad = await Adressdb.find({ userId: id });
 
         user = await Userdb.findById({ _id: req.session.isAvailable });
 
-
-
-        res.render("oddersuccess", { test: val, productad: userad ,products: pro, sessval: sess ,userdt: user, total: flultotal});
-
+        res.render("oddersuccess", {
+            test: val,
+            productad: userad,
+            products: pro,
+            sessval: sess,
+            userdt: user,
+            total: flultotal,
+        });
     } else {
         res.redirect("/login");
     }
-
-   
 };
 
+const oddersuccesspost = async (req, res) => {
+    const addressid = req.body.addresid;
+    const paymentmethode = req.body.payment;
 
+    console.log(addressid);
+    console.log(paymentmethode);
 
+    if (paymentmethode == "Cash on delivery") {
+        const userid = req.session.isAvailable;
+        const user = await Userdb.findById({ _id: req.session.isAvailable });
+        const value = user.cart.item.map(async (val, i) => {
+            let prid = val.productId;
 
-const oddersuccesspost = async (req, res, next) => {
+            const product = await Productdb.findById({ _id: prid });
 
+            let prs = product.stock;
 
-   
-   const addressid = req.body.addresid
-   console.log(req.body.addresid +"req.body.addresid 1") 
-   const paymentmethode = req.body.payment
-   console.log(paymentmethode +"req.body.paymentmethode 1111") 
-   const userid = req.session.isAvailable
-   console.log(userid+"userid...............2")
+            let pri = val.qty;
 
+            if (prs - pri <= 0) {
+                
+                console.log("less.....................................");
+            }
 
- const user = await Userdb.findById({ _id: req.session.isAvailable });
- console.log(user+"user...............3")
-
-   const value = user.cart.item.map(async (val,i) =>{
-
-        let prid = val.productId
-        console.log(prid+"prid...............4")
-        
-
-        const product = await Productdb.findById({ _id: prid })
-        console.log(product+"product...............5")
-
-        let prs = product.stock 
-        console.log(prs+"prs...............6")
-
-        let pri = val.qty
-        console.log(pri+"pri...............7")
-
-        product.stock = prs - pri
-        product.save()
-
-   });
-
-
-   const Adress = await Adressdb.findById({ _id: addressid });
-//    console.log(Adress+"Adress............")
-//    const pay = req.body.payment
-//    const name = Adress.fullname
-//    const phone = Adress.phone1
-//    const pin = Adress.pincode
-//    const sta = Adress.state
-//    const ci = Adress.city
-//    const hno = Adress.houseNo
-//    const rna = Adress.roadName
-
-//    console.log(`userid=${userid}, pay=${pay}, name=${name}, phone=${phone}, pin=${pin}, sta=${sta}, ci=${ci}, hno=${hno}, rna=${rna} `)
-//    console.log(req+"req.body")
-
-
-
-   const Orders = new Ordersdb({
-    userId: userid,
-    payment: req.body.payment,
-    fullname: Adress.fullname,
-    phone1: Adress.phone1,
-    pincode: Adress.pincode,
-    state: Adress.state,
-    city: Adress.city,
-    houseNo: Adress.houseNo,
-    roadName: Adress.roadName,
-    // createdAt: true,
-    status: true,
-    productReturned: 0,
-
-});
-
-//save Orders in the database
-Orders.save(user)
-    .then((data) => {
-        console.log("sucess")
-    })
-    .catch((err) => {
-        res.status(500).send({
-            message: err.message || "some error",
+            product.stock = prs - pri;
+            product.save();
         });
+
+        const Adress = await Adressdb.findById({ _id: addressid });
+
+        const Orders = new Ordersdb({
+            userId: userid,
+            payment: req.body.payment,
+            fullname: Adress.fullname,
+            phone1: Adress.phone1,
+            pincode: Adress.pincode,
+            state: Adress.state,
+            city: Adress.city,
+            houseNo: Adress.houseNo,
+            roadName: Adress.roadName,
+            // createdAt: true,
+            status: "pending",
+            productReturned: 0,
+        });
+
+        //save Orders in the database
+        Orders.save(user)
+            .then((data) => {})
+            .catch((err) => {
+                res.status(500).send({
+                    message: err.message || "some error",
+                });
+            });
+
+        user.cart.item.map(async (val, i) => {
+            let productId = val.productId;
+            let qty = val.qty;
+            let price = val.price;
+
+            Orders.products.item.push({ productId, qty, price });
+        });
+
+        let total = Orders.products.item.reduce((tot, val) => {
+            return tot + val.price * val.qty;
+        }, 0);
+
+        Orders.products.totalPrice = total;
+
+        const dash = await Dashdb.findOneAndUpdate({});
+        dash.order += 1;
+        dash.sale += 1;
+        dash.rupee += total;
+        dash.profit += total;
+        dash.save();
+    }
+
+    //  **********************************************************
+
+    // if(paymentmethode=="Razorpay"){
+    //     const instance = new Razorpay({
+    //         // key_id: key_id,
+    //         key_id:"rzp_test_zVBhrL4CVfIezv",
+    //         key_secret: "HeU66JXIWNBWFHC1vnC6qB7X"
+    //     });
+    //     let order = await instance.orders.create({
+    //         amount: 500 * 100,
+    //         currency: "INR",
+    //         receipt: 'new id u want to impliment',
+    //     })
+    //     console.log("########## ")
+    //     console.log("order >> ",order)
+    //     res.json({data:order});
+    // }
+
+    //**********************************************************
+
+    const razorpay = new Razorpay({
+        key_id: "rzp_test_zVBhrL4CVfIezv",
+        key_secret: "HeU66JXIWNBWFHC1vnC6qB7X",
     });
 
-    
-    user.cart.item.map(async (val,i) =>{
+    const amount = 50000; // Amount in paise (100 paise = 1 INR)
+    const currency = "INR";
 
-        let productId = val.productId
-        let qty = val.qty
-        let price = val.price
+    const order = await razorpay.orders.create({
+        amount: amount,
+        currency: currency,
+        receipt: "order_12345", // Generate a unique order ID on your server
+    });
 
-        Orders.products.item.push({productId ,qty ,price })
-   });
-
-res.redirect("/oddersuccess")
-
-
-
+    res.json({ order });
 };
 
+const oddersuccesspostend = (req, res) => {};
 
+const checkphoneup = async (req, res) => {
+    let number = req.body.number;
+    console.log(number);
 
+    user = await Userdb.find({ mobile: number })
 
+        .then((data) => {
+            if (!data) {
+                let val = [
+                    {
+                        res: "",
+                    },
+                ];
+
+                res.json(val);
+            } else {
+                console.log(data);
+                res.json(data);
+            }
+        })
+        .catch((err) => {
+            res.status(500).send({ message: "Error retriving user with id" });
+        });
+    if (user) {
+        console.log(user);
+    }
+};
+
+const orderStatus = async (req, res) => {
+    odderId = req.query.id;
+    let val = {
+        v: 1,
+    };
+    let ret = false;
+    let cancel = false;
+
+    const orders = await Ordersdb.findById({ _id: odderId });
+    if (orders.status == "delivered") {
+        ret = true;
+    }
+    if (orders.status == "order confirmed" || orders.status == "shipped") {
+        cancel = true;
+    }
+
+    const product = await Productdb.find({});
+
+    res.render("orderStatus", { test: val, orders, product, ret, cancel });
+};
 
 //**************************** post api ****************************
 
 //1
 //create and save new user
-const create = (req, res) => {
+const create = async (req, res) => {
     //validate request
-    // console.log(req.body);
+
     if (!req.body) {
         res.status(400).send({ message: "contant can not be empty!" });
         return;
     }
-    console.log("end");
+    console.log(req.body.name)
+    console.log(req.body.email)
+    console.log(req.body.mobile)
+    console.log(req.body.password)
+ 
 
+    const dash = await Dashdb.findOneAndUpdate({});
+    dash.user += 1;
+    dash.save();
     //new user
     const user = new Userdb({
         name: req.body.name,
@@ -829,7 +870,8 @@ const create = (req, res) => {
     //save user in the database
     user.save(user)
         .then((data) => {
-            res.redirect("/login");
+            res.json(data)
+            // res.redirect("/login");
         })
         .catch((err) => {
             res.status(500).send({
@@ -855,7 +897,7 @@ const productfind = (req, res) => {
                 res.status(500).send({ message: "Error retriving user with id" });
             });
     } else {
-        Productdb.find()
+        Productdb.find({ isAvailable: true })
             .then((products) => {
                 res.send(products);
             })
@@ -874,8 +916,6 @@ const productsearch = (req, res) => {
             if (!data) {
                 res.status(404).send({ message: "Not found user with id" });
             } else {
-                console.log("4");
-                console.log(data);
                 res.json(data);
             }
         })
@@ -886,16 +926,13 @@ const productsearch = (req, res) => {
 
 //4.
 const sortfind = (req, res) => {
-    console.log("3....", req.body.va);
     const value = req.body.va;
-
     Productdb.find({})
         .sort({ price: value })
         .then((data) => {
             if (!data) {
                 res.status(404).send({ message: "Not found user with id" });
             } else {
-                console.log("4");
                 res.json(data);
             }
         })
@@ -907,12 +944,10 @@ const sortfind = (req, res) => {
 //5.
 const filterfind = (req, res) => {
     const value = req.body;
-    console.log("value:........" + value);
     axios
         .get("http://localhost:3000/user/filter/product", { params: { value } })
 
         .then((response) => {
-            console.log("res" + response.data);
             res.json(response.data);
         })
         .catch((err) => {
@@ -922,10 +957,7 @@ const filterfind = (req, res) => {
 
 //6
 const poductpagin = async (req, res) => {
-    // console.log("s....", req.body.svalue);
     const values = req.body.svalue;
-
-    // console.log("l....", req.body.lvalue);
     const valuel = req.body.lvalue;
 
     await Productdb.find({})
@@ -936,7 +968,6 @@ const poductpagin = async (req, res) => {
             if (!data) {
                 res.status(404).send({ message: "Not found user with id" });
             } else {
-                console.log(data);
                 res.json(data);
             }
         })
@@ -945,49 +976,7 @@ const poductpagin = async (req, res) => {
         });
 };
 
-// block_user_find
-// const addAddress = (req, res) => {
-//     try {
-//     } catch (error) {}
-// };
-// const isLogin = (req, res, next) => {
-//     try {
-//         if (req.session.user) {
-//             res.render("home");
-//         } else {
-//             next();
-//         }
-//     } catch (error) {
-//         console.log(error);
-//     }
-// };
-
-// const category = (req, res) => {
-//     res.render("category");
-// };
-
-// const sortfind = async (req, res) => {
-//     console.log("3....")
-//     const value = req.body
-//     console.log("value:"+req.body)
-//     // const value = req.query.value;
-//   await  Productdb.find({}).sort({price:value})
-//         .then((data) => {
-//             if (!data) {
-//                 res.status(404).send({ message: "Not found user with id" });
-//             } else {
-//                 console.log("4....")
-//                 console.log("....."+data)
-//                 res.json(data)
-//             }
-//         })
-//         .catch((err) => {
-//             res.status(500).send({ message: "Error retriving user with id" });
-//         });
-// // res.render("newpassword");
-// };
-
-//************************ end ********* end ************************
+//************************ end ********* end ***********************
 
 //1.
 const filterfindcategory = (req, res) => {
@@ -997,7 +986,6 @@ const filterfindcategory = (req, res) => {
         .then((response) => {
             console.log(response.data);
             res.render("cart");
-            // res.render("product",{ products: response.data })
         })
         .catch((err) => {
             res.send(err);
@@ -1006,44 +994,166 @@ const filterfindcategory = (req, res) => {
 
 //2.
 const productfilter = (req, res) => {
-    // console.log("in id")
     const value = req.query.value;
-    console.log("params===" + value);
     Productdb.find({ category: { $in: value } })
         .then((data) => {
             if (!data) {
                 res.status(404).send({ message: "Not found user with id" });
             } else {
-                // console.log("....."+data)
                 res.send(data);
             }
         })
         .catch((err) => {
             res.status(500).send({ message: "Error retriving user with id" });
         });
-
-    // res.render("register");
 };
 
 //3
 const sortfilter = (req, res) => {
-    // console.log("in id")
     const value = req.query.value;
-    console.log("params===" + value);
     Productdb.find({})
         .sort({ price: value })
         .then((data) => {
             if (!data) {
                 res.status(404).send({ message: "Not found user with id" });
             } else {
-                // console.log("....."+data)
-                console.log("4");
                 res.send(data);
             }
         })
         .catch((err) => {
             res.status(500).send({ message: "Error retriving user with id" });
         });
+};
+
+const couponCodeCheck = async (req, res) => {
+    if (req.session.isAvailable) {
+        let couponcode = req.body.coupon;
+
+        const couponck = await Coupon.findOne({ code: couponcode });
+        if (couponck.count <= 1) {
+            return;
+        }
+        let percent = couponck.percent;
+        let maxoff = couponck.maxoff;
+
+        const sess = req.session.isAvailable;
+        let val = {
+            v: 1,
+        };
+        let user = {};
+
+        // let arr = [];
+
+        let pro = [];
+        let coupon = [];
+
+        let userad = {};
+
+        let flultotal = 0;
+
+        user = await Userdb.findByIdAndUpdate({ _id: req.session.isAvailable });
+
+        const value = user.cart.item.map((val) => val.productId);
+
+        const fultot = user.cart.item.map((val) => {
+            const res = val.qty * val.price;
+            return res;
+        });
+
+        flultotal = fultot.reduce((tot, val) => {
+            return tot + val;
+        }, 0);
+
+        if (flultotal) {
+            let prc = (percent * flultotal) / 100;
+            if (maxoff > prc) {
+                flultotal = flultotal - maxoff;
+                // console.log(flultotal + "ans1");
+            } else {
+                flultotal = flultotal - prc;
+                // await user.save()
+            }
+
+            user.cart.totalPrice = flultotal;
+            user.save();
+        }
+
+        // await user.save()
+
+        pro = await Productdb.find({ _id: { $in: value } });
+
+        const id = req.session.isAvailable;
+        userad = await Adressdb.find({ userId: id });
+
+        // coupon = await Coupon.find({});
+        couponck.usedBy.push(sess);
+        couponck.count -= 1;
+        await couponck.save();
+    } else {
+        res.redirect("/login");
+    }
+};
+
+const return_reason = async (req, res) => {
+    let Orders = await Ordersdb.findByIdAndUpdate({ _id: req.body.id });
+
+    Orders.reason = req.body.value;
+    Orders.status = "returned";
+    Orders.save();
+    if (Orders.reason != "product damage") {
+        Orders.products.item.map(async (item) => {
+            let prid = item.productId;
+            let prqty = item.qty;
+            const product = await Productdb.findByIdAndUpdate({ _id: prid });
+            product.stock += prqty;
+            product.save();
+        });
+    }
+    const dash = await Dashdb.findOneAndUpdate({});
+    dash.return += 1;
+    dash.save();
+    res.json(Orders);
+};
+
+const addressChange = async (req, res) => {
+    let val = {
+        v: 1,
+    };
+    console.log(req.query.id);
+    const adress = await Adressdb.findById({ _id: req.query.id });
+    console.log(adress);
+
+    res.render("addressChange", { test: val, adress });
+};
+
+const adress_update = async (req, res) => {
+    if (!req.body) {
+        return res.status(400).send({ message: "data to update can not be empty!" });
+    }
+    const id = req.params.id;
+    try {
+        const datares = await Adressdb.findByIdAndUpdate(id, req.body, { new: true });
+        if (!datares) {
+            res.status(404).send({ message: "user not found" });
+        } else {
+            console.log(datares);
+            res.send(datares);
+        }
+    } catch (err) {
+        console.log(err);
+        res.status(500).send({ message: "error update user information" });
+    }
+};
+
+const odder_cancel = async (req, res) => {
+    console.log("start..............................");
+    console.log(req.body.id);
+    let Orders = await Ordersdb.findByIdAndUpdate({ _id: req.body.id });
+    Orders.status = "cancel";
+    console.log(Orders);
+    Orders.save();
+    console.log(Orders);
+    res.json(Orders);
 };
 
 module.exports = {
@@ -1084,7 +1194,13 @@ module.exports = {
     cartremove,
     wishlistremove,
     oddersuccess,
-    oddersuccesspost
+    oddersuccesspost,
+    checkphoneup,
+    orderStatus,
+    oddersuccesspostend,
+    couponCodeCheck,
+    return_reason,
+    addressChange,
+    adress_update,
+    odder_cancel,
 };
-
-// .get("http://localhost:3000/user/filter/product",{ params: {value:req.query.value} })

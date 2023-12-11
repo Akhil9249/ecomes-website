@@ -55,10 +55,9 @@
                                                 <div class="cart-product-quantity" >
 													
 													<% if( products[i]._id.toString()  ==  userdt.cart.item[j].productId.toString() ) { %>
-														<span onclick="priceinc('<%= products[i]._id %>','<%= sessval %>',-1)"><button>-</button></span> &nbsp&nbsp;
-														<span id="sample"><%= userdt.cart.item[j].qty %></span>&nbsp&nbsp;
+														<span class="minesbtn"  id="leftbtn" onclick="priceinc('<%= products[i]._id %>','<%= sessval %>',-1)"><button>-</button></span> &nbsp&nbsp;
+														<span class="showbtn" id="sample"><%= userdt.cart.item[j].qty %></span>&nbsp&nbsp;
 														<span onclick="priceinc('<%= products[i]._id %>','<%= sessval %>',1)"><button>+</button></span>
-														<!-- <input type="number" class="form-control" value="" min="1" max="10" step="1" data-decimals="0" placeholder="<%= userdt.cart.item[j].qty %>"  required> -->
 														<% } %>	
 
 							
@@ -136,7 +135,7 @@
 														<label class="custom-control-label" for="standart-shipping">Standart:</label>
 													</div><!-- End .custom-control -->
 	                							</td>
-	                							<td>$10.00</td>
+	                							<td>$0.00</td>
 	                						</tr><!-- End .summary-shipping-row -->
 
 	                						<tr class="summary-shipping-row">
@@ -146,13 +145,10 @@
 														<label class="custom-control-label" for="express-shipping">Express:</label>
 													</div><!-- End .custom-control -->
 	                							</td>
-	                							<td>$20.00</td>
+	                							<td>$0.00</td>
 	                						</tr><!-- End .summary-shipping-row -->
 
-	                						<tr class="summary-shipping-estimate">
-	                							<td>Estimate for Your Country<br> <a href="dashboard.html">Change address</a></td>
-	                							<td>&nbsp;</td>
-	                						</tr><!-- End .summary-shipping-estimate -->
+	                						
 
 	                						<tr class="summary-total">
 	                							<td>Total:</td>
@@ -164,7 +160,7 @@
 	                				<a href="/checkout" class="btn btn-outline-primary-2 btn-order btn-block">PROCEED TO CHECKOUT</a>
 	                			</div><!-- End .summary -->
 
-		            			<a href="category.html" class="btn btn-outline-dark-2 btn-block mb-3"><span>CONTINUE SHOPPING</span><i class="icon-refresh"></i></a>
+		            			<a href="/" class="btn btn-outline-dark-2 btn-block mb-3"><span>CONTINUE SHOPPING</span><i class="icon-refresh"></i></a>
 	                		</aside><!-- End .col-lg-3 -->
 	                	</div><!-- End .row -->
 	                </div><!-- End .container -->
@@ -173,6 +169,27 @@
         </main><!-- End .main -->
 
 		<script>
+// leftbtn
+// let leftbtn = document.getElementById("sample").innerHTML
+// console.log(leftbtn)
+// if(leftbtn<=1){
+// 	let leftbtn = document.getElementById("leftbtn")
+// 	leftbtn.style.display = "none";
+// }
+
+let arr=document.querySelectorAll(".minesbtn")
+           
+let arr2=document.querySelectorAll(".showbtn")
+
+
+arr2.forEach((element,index)=>{
+		let res = element.innerHTML
+		if(res<=1){
+			arr[index].style.display = "none";
+		}
+
+})
+
 
 
 function priceinc(idval,sessval,chan){
@@ -186,7 +203,6 @@ function priceinc(idval,sessval,chan){
                 method: "put",
                 headers: {
                     "Content-Type": "application/json",
-                    // Add any other headers here if needed
                 },
                 body: JSON.stringify({ idvalues: idval , sessvalues:sessval,change:chan}),
             	})
@@ -197,29 +213,10 @@ function priceinc(idval,sessval,chan){
                     return result;
                 })
                 .then((data) => {
-                    console.log("data==" + data);
-
-                    // resultcall(data);
-
-					// ****************************** function ***************//
-
-					let productdiv = document.getElementById("sample");
-
-// productdiv.innerHTML = "";
-// data.forEach((element) => {
-// 	console.log(element.name);
-// 	const item = ` 
-// `;
-// 	productdiv.innerHTML += item;
-// });
-
-// ****************************** function ***************//
-
-
+					// let productdiv = document.getElementById("sample");
                 })
+				.then(res=>{window.location.reload()})
                 .catch((err) => console.log(err));
-       
-
 }
 
 
@@ -248,8 +245,9 @@ fetch("/cart/remove", {
 	.then((data) => {
 		console.log("data==" + data);
 
-		// resultcall(data);
+		// resultcall(data);	
 	})
+	.then(res=>{window.location.reload()})
 	.catch((err) => console.log(err));
 // console.log(value)
 }

@@ -21,54 +21,52 @@
                     <div class="cat-blocks-container">
                         <div class="row">
                             <div class="col-6 col-md-3 col-lg-3">
-                                <a href="category.html" class="cat-block">
+                                <a href="#" class="cat-block">
                                     <figure>
                                         <span>
-                                            <img src="<%= products[13].image[0] %>" alt="img" class="product-image" style="width: 100px;height: 100px;" />
+                                            <img src="<%= producttop[13].image[0] %>" alt="img" class="product-image" style="width: 100px;height: 100px;" />
                                         </span>
                                     </figure>
 
-                                    <h3 class="cat-block-title"><%= products[1].name %></h3>
+                                    <h3 class="cat-block-title"><%= producttop[1].name %></h3>
                                     <!-- End .cat-block-title -->
                                 </a>
                             </div>
 
                             <div class="col-6 col-md-3 col-lg-3">
-                                <a href="category.html" class="cat-block">
+                                <a href="#" class="cat-block">
                                     <figure>
                                         <span>
-                                            <img src="<%= products[7].image[0] %>" alt="img" class="product-image" style="width: 100px;height: 100px;" />
+                                            <img src="<%= producttop[7].image[0] %>" alt="img" class="product-image" style="width: 100px;height: 100px;" />
                                         </span>
                                     </figure>
 
-                                    <h3 class="cat-block-title"><%= products[7].name %></h3>
+                                    <h3 class="cat-block-title"><%= producttop[7].name %></h3>
                                     <!-- End .cat-block-title -->
                                 </a>
                             </div>
 
                             <div class="col-6 col-md-3 col-lg-3">
-                                <a href="category.html" class="cat-block">
+                                <a href="#" class="cat-block">
                                     <figure>
                                         <span>
-                                            <img src="<%= products[1].image[0] %>" alt="img" class="product-image" style="width: 100px;height: 100px;" />
+                                            <img src="<%= producttop[1].image[0] %>" alt="img" class="product-image" style="width: 100px;height: 100px;" />
                                         </span>
                                     </figure>
 
-                                    <h3 class="cat-block-title"><%= products[14].name %></h3>
-                                    <!-- End .cat-block-title -->
+                                    <h3 class="cat-block-title"><%= producttop[1].name %></h3>
                                 </a>
                             </div>
 
                             <div class="col-6 col-md-3 col-lg-3">
-                                <a href="category.html" class="cat-block">
+                                <a href="#" class="cat-block">
                                     <figure>
                                         <span>
-                                            <img src="<%= products[14].image[0] %>" alt="img" class="product-image" style="width: 100px;height: 100px;" />
+                                            <img src="<%= producttop[14].image[0] %>" alt="img" class="product-image" style="width: 100px;height: 100px;" />
                                         </span>
                                     </figure>
 
-                                    <h3 class="cat-block-title"><%= products[14].name %></h3>
-                                    <!-- End .cat-block-title -->
+                                    <h3 class="cat-block-title"><%= producttop[14].name %></h3>
                                 </a>
                             </div>
                             
@@ -220,7 +218,8 @@
 
                     <nav aria-label="Page navigation">
                         <ul class="pagination">
-                            <li class="page-item disabled">
+                            <!-- disabled -->
+                            <li class="page-item ">
                                 <a
                                     class="page-link page-link-prev"
                                     href="#"
@@ -228,7 +227,7 @@
                                     tabindex="-1"
                                     aria-disabled="true"
                                 >
-                                    <span aria-hidden="true"><i class="icon-long-arrow-left"></i></span>Prev
+                                    <span aria-hidden="true"><i class="icon-long-arrow-left" onclick="pagel(8,'<%= products.length%>')"></i></span>Prev
                                 </a>
                             </li>
                             <li class="page-item active" aria-current="page"><a class="page-link" href="#">1</a></li>
@@ -236,7 +235,7 @@
                             <li class="page-item-total">of 2</li>
                             <li class="page-item">
                                 <a class="page-link page-link-next" href="#" aria-label="Next">
-                                     <span aria-hidden="true" onclick="page(8,'<%= products.length%>')">Next<i class="icon-long-arrow-right"></i></span>
+                                     <span aria-hidden="true" onclick="pager(8,'<%= products.length%>')">Next<i class="icon-long-arrow-right"></i></span>
                                 </a>
                             </li>
                         </ul>
@@ -256,7 +255,7 @@
                                         <div class="custom-control custom-checkbox">
                                             <input
                                                 type="checkbox"
-                                                onclick="getCategory('Headphone')"
+                                                onclick="getCategory('HEADPHONE')"
                                                 class="custom-control-input"
                                                 id="brand-1"
                                             />
@@ -270,7 +269,7 @@
                                         <div class="custom-control custom-checkbox">
                                             <input
                                                 type="checkbox"
-                                                onclick="getCategory('Speaker')"
+                                                onclick="getCategory('WATCH')"
                                                 class="custom-control-input"
                                                 id="brand-6"
                                             />
@@ -284,7 +283,7 @@
                                         <div class="custom-control custom-checkbox">
                                             <input
                                                 type="checkbox"
-                                                onclick="getCategory('Speaker')"
+                                                onclick="getCategory('SPEAKER')"
                                                 class="custom-control-input"
                                                 id="brand-7"
                                             />
@@ -359,6 +358,7 @@
     let categorycheckbox = new Array();
     let productvalue = null;
     let result=0
+    let resultleft=0
     // let prlength=0
 
     function addtocart(i,p) {
@@ -451,15 +451,13 @@
 
     //*********************** pagination ***********************//
 
-    function page(value,len){  
+    function pager(value,len){  
 
         console.log(len)
         
         result=result+value
         console.log(result)
-
-        
-        
+        resultleft=result+8
 
         console.log("first")
         // const value = document.getElementById("searchValue").value
@@ -479,7 +477,7 @@
                     return result;
                 })
                 .then((data) => {
-                    console.log("data==" + data);
+                    console.log( data);
                     resultcall(data)
                     
                 })
@@ -489,6 +487,51 @@
         console.log(value)
     }
 
+
+
+    
+
+    function pagel(value,len){  
+
+    console.log(resultleft+"===res")
+
+    result = resultleft-value
+
+    console.log(result+"result");
+
+    let result2 = resultleft-(value*2)
+
+
+    console.log(result2+"result2")
+
+
+    console.log("first")
+    // const value = document.getElementById("searchValue").value
+
+    fetch("/poduct/pagin", {
+        method: "post",
+        headers: {
+            "Content-Type": "application/json",
+            // Add any other headers here if needed
+        },
+        body: JSON.stringify({ svalue: result2,lvalue: result }),
+    })
+        .then((response) => {
+            console.log("5....");
+            const result = response.json();
+            // console.log(result);
+            return result;
+        })
+        .then((data) => {
+            console.log(data);
+            result=result-value
+            resultcall(data)
+            
+        })
+        .catch((err) => console.log(err));
+
+        console.log(value)
+        }
 
     //*********************** Sort ***********************//
 
@@ -574,6 +617,7 @@
                     return result;
                 })
                 .then((data) => {
+                    console.log(data);
                     console.log("data==" + data);
                     resultcall(data);
                 });
@@ -588,7 +632,7 @@
         productdiv.innerHTML = "";
 
         data.forEach((element) => {
-            console.log(element.name);
+            console.log(element.image);
             const item = ` 
         <div class="col-6 col-md-4 col-xl-3">
                                     <div class="product">
@@ -596,7 +640,7 @@
                                     <span class="product-label label-new">New</span>
 
                                     <a href="/single-product?id=${element._id}">
-                                        <img src="${element.image}" alt="img" class="product-image" />
+                                        <img src="${element.image[0]}" alt="img" class="product-image" />
                                       
                                     </a>
 
