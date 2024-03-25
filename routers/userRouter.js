@@ -1,11 +1,11 @@
 const express = require("express");
 const userControllers = require("../controller/userControllers");
 const session = require("express-session");
+const middleware = require("../middleware/userAuth");
 // const nocache = require('nocache')
 const { v4: uuidv4 } = require("uuid");
 
 const router = express();
-
 // router.use(nocache())
 
 router.use(
@@ -21,56 +21,45 @@ router.use(
 //     next();
 //   });
 
-// ****************************** checkmiddleware ****************************** //
-function abc(req, res, next) {
-    console.log("middleware...products", req.body);
-    next();
-}
-// ****************************** checkmiddleware ****************************** //
+router.get("/", middleware.isVerified, userControllers.home);
 
-router.get("/", userControllers.home);
-
-router.get("/login", userControllers.login);
+router.get("/login", middleware.sessionRepeat, userControllers.login);
 
 router.post("/signin", userControllers.signin);
 
-router.get("/register", userControllers.register);
+router.get("/register", middleware.isLogin, userControllers.register);
 
 router.post("/api/users", userControllers.create);
 
 router.get("/logout", userControllers.logout);
 
-router.get("/product", userControllers.product);
+router.get("/product", middleware.isVerified, userControllers.product);
 
-router.get("/single-product", userControllers.single_product);
+router.get("/single-product", middleware.isVerified, userControllers.single_product);
 
-// router.get('/category',userControllers.category)
+router.get("/wishlist", middleware.isSession, middleware.isVerified, userControllers.wishlist);
 
-router.get("/wishlist", userControllers.wishlist);
-
-router.put("/addwishlist", userControllers.addwishlistput);
+router.put("/addwishlist", middleware.isSession, userControllers.addwishlistput);
 
 router.put("/wishlist/remove", userControllers.wishlistremove);
 
-router.get("/cart", userControllers.cart);
+router.get("/cart", middleware.isSession, middleware.isVerified, userControllers.cart);
 
-router.put("/addcart", userControllers.addcartput);
+router.put("/addcart", middleware.isSession, userControllers.addcartput);
 
 router.put("/cart/updat", userControllers.cartupdat);
 
 router.put("/cart/remove", userControllers.cartremove);
 
-router.get("/dashboard", userControllers.dashboard);
+router.get("/dashboard", middleware.isSession, middleware.isVerified, userControllers.dashboard);
 
-router.post("/dashboardpost", userControllers.dashboardpost);
+router.post("/dashboardpost", middleware.isSession, userControllers.dashboardpost);
 
-router.get("/forgotnumber", userControllers.forgotnumber);
+router.get("/forgotnumber", middleware.isLogin, userControllers.forgotnumber);
 
 router.get("/newpassword", userControllers.newpassword);
 
 router.post("/checknumber", userControllers.checknumber);
-
-// router.post('/resendotp',userControllers.checknumber)
 
 router.get("/otppage", userControllers.generate, userControllers.otppage);
 
@@ -78,35 +67,29 @@ router.post("/otppost", userControllers.otppost);
 
 router.post("/passwordchange", userControllers.passwordchange);
 
-// router.get('/addcart',userControllers.addcart)
+router.get("/checkout", middleware.isSession, middleware.isVerified, userControllers.checkout);
 
-router.get("/checkout", userControllers.checkout);
+router.get("/oddersuccess", middleware.isSession, userControllers.oddersuccess);
 
-router.get("/oddersuccess", userControllers.oddersuccess);
+router.post("/odder/successpost/Check", userControllers.odder_success_Check);
 
 router.post("/oddersuccesspost", userControllers.oddersuccesspost);
 
 router.post("/check/phoneup", userControllers.checkphoneup);
 
-router.get("/orderStatus", userControllers.orderStatus);
+router.get("/orderStatus", middleware.isVerified, userControllers.orderStatus);
 
-router.put("/couponCodeCheck", userControllers.couponCodeCheck);
+router.put("/couponCodeCheck", middleware.isSession, userControllers.couponCodeCheck);
 
 router.put("/return/reason", userControllers.return_reason);
 
 router.get("/addressChange", userControllers.addressChange);
 
-// router.put('/check/user?id',userControllers.block_user_find)
-// router.post('/addAddress',userControllers.addAddress)
-//post methode
-
-router.get("/user/check/product", userControllers.productfind);
+router.get("/user/check/product", userControllers.productfind); // x
 
 router.get("/check/product", userControllers.productfind);
 
-router.get("/user/filter/product", userControllers.productfilter);
-
-// router.get('/user/filter/sort',userControllers.sortfilter)
+router.get("/user/filter/product", userControllers.productfilter); // x
 
 router.post("/odder/cancel", userControllers.odder_cancel);
 
@@ -117,12 +100,12 @@ router.post("/poduct/sortfind", userControllers.sortfind);
 
 router.post("/poduct/filter", userControllers.filterfind);
 
-router.get("/poduct/filter", userControllers.filterfindcategory);
+router.get("/poduct/filter", userControllers.filterfindcategory); // x
 
 router.post("/poduct/pagin", userControllers.poductpagin);
 
-router.put("/adress/update/:id", userControllers.adress_update);
+router.patch("/adress/update/:id", userControllers.adress_update);
 
-// ************************ product page ************************ //
+
 
 module.exports = router;

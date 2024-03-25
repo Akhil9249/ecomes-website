@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 
-
 <!-- molla/index-13.html  22 Nov 2019 09:59:06 GMT -->
 <head>
     <meta charset="UTF-8">
@@ -33,29 +32,16 @@
     <link rel="stylesheet" href="assets/css/style.css">
     <link rel="stylesheet" href="assets/css/skins/skin-demo-13.css">
     <link rel="stylesheet" href="assets/css/demos/demo-13.css">
-    <link rel="stylesheet" href="assets/css/toast.css">
+    <!-- <link rel="stylesheet" href="assets/css/toast.css"> -->
+    <link rel="stylesheet" href="assets/css/toastSmall.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css">
-    <!-- <script src="javascript/script.js" defer></script> -->
-
+    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css"> -->
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
-    <style>
-        /* Add some basic styling for the toast */
-        #toast {
-            display: none;
-            position: fixed;
-            top: 80px;
-            right: 10px;
-            background-color: #9ed40b;
-            color: #fff;
-            padding: 15px;
-            border-radius: 5px;
-        }
-    </style>
-
 
 </head>
 
 <body>
+    <ul class="notifications" ></ul>
     <div class="page-wrapper">
         <header class="header header-10 header-intro-clearance">
             
@@ -94,7 +80,11 @@
                             
                             <a href="/wishlist" class="wishlist-link">
                                 <i class="icon-heart-o"></i>
-                                <!-- <span class="wishlist-count">3</span> -->
+                                <!-- <span class="wishlist-count">2</span> -->
+                                
+                                <% if(test.v==1) { %>
+                                    <span class="wishlist-count"><%= Totalwish %></span>
+                                    <% } %>
                                 <span class="wishlist-txt">Wishlist</span>
                             </a>
 
@@ -102,6 +92,9 @@
                                 <a href="/cart" class="dropdown-toggle" role="button" aria-haspopup="true" aria-expanded="false" data-display="static">
                                     <i class="icon-shopping-cart"></i>
                                     <!-- <span class="cart-count">2</span> -->
+                                    <% if(test.v==1) { %>
+                                        <span class="cart-count"><%= Totalcart %></span>
+                                        <% } %>
                                     <span class="cart-txt">Cart</span>
                                 </a>
 
@@ -191,3 +184,4 @@
                 </div><!-- End .container -->
             </div><!-- End .header-bottom -->
         </header><!-- End .header -->
+        

@@ -1,0 +1,403 @@
+<%- include('../partials/admin-header') %>
+
+
+<div class="container" style="margin-top: 100px; width: 100%;">
+    <div class="row">
+        
+        <div class="card-deck col-sm-12">
+            <div class="card shadow p-3 mb-5 bg-body rounded ">
+              <div style="display: flex;justify-content: space-around;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-cart-check" viewBox="0 0 16 16">
+                  <path d="M11.354 6.354a.5.5 0 0 0-.708-.708L8 8.293 6.854 7.146a.5.5 0 1 0-.708.708l1.5 1.5a.5.5 0 0 0 .708 0l3-3z"/>
+                  <path d="M.5 1a.5.5 0 0 0 0 1h1.11l.401 1.607 1.498 7.985A.5.5 0 0 0 4 12h1a2 2 0 1 0 0 4 2 2 0 0 0 0-4h7a2 2 0 1 0 0 4 2 2 0 0 0 0-4h1a.5.5 0 0 0 .491-.408l1.5-8A.5.5 0 0 0 14.5 3H2.89l-.405-1.621A.5.5 0 0 0 2 1zm3.915 10L3.102 4h10.796l-1.313 7h-8.17zM6 14a1 1 0 1 1-2 0 1 1 0 0 1 2 0m7 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0"/>
+                </svg>              <h5 class="card-title" style="text-align: center;">Orders</h5>
+            </div>
+              <div class="card-body">
+                <h5 class="card-title" style="text-align: center;"><%= dash[0].order %></h5>
+                <!-- <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p> -->
+              </div>
+            </div>
+            <div class="card shadow p-3 mb-5 bg-body rounded ">
+              <div style="display: flex;justify-content: space-around;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-receipt" viewBox="0 0 16 16">
+                  <path d="M1.92.506a.5.5 0 0 1 .434.14L3 1.293l.646-.647a.5.5 0 0 1 .708 0L5 1.293l.646-.647a.5.5 0 0 1 .708 0L7 1.293l.646-.647a.5.5 0 0 1 .708 0L9 1.293l.646-.647a.5.5 0 0 1 .708 0l.646.647.646-.647a.5.5 0 0 1 .708 0l.646.647.646-.647a.5.5 0 0 1 .801.13l.5 1A.5.5 0 0 1 15 2v12a.5.5 0 0 1-.053.224l-.5 1a.5.5 0 0 1-.8.13L13 14.707l-.646.647a.5.5 0 0 1-.708 0L11 14.707l-.646.647a.5.5 0 0 1-.708 0L9 14.707l-.646.647a.5.5 0 0 1-.708 0L7 14.707l-.646.647a.5.5 0 0 1-.708 0L5 14.707l-.646.647a.5.5 0 0 1-.708 0L3 14.707l-.646.647a.5.5 0 0 1-.801-.13l-.5-1A.5.5 0 0 1 1 14V2a.5.5 0 0 1 .053-.224l.5-1a.5.5 0 0 1 .367-.27m.217 1.338L2 2.118v11.764l.137.274.51-.51a.5.5 0 0 1 .707 0l.646.647.646-.646a.5.5 0 0 1 .708 0l.646.646.646-.646a.5.5 0 0 1 .708 0l.646.646.646-.646a.5.5 0 0 1 .708 0l.646.646.646-.646a.5.5 0 0 1 .708 0l.646.646.646-.646a.5.5 0 0 1 .708 0l.509.509.137-.274V2.118l-.137-.274-.51.51a.5.5 0 0 1-.707 0L12 1.707l-.646.647a.5.5 0 0 1-.708 0L10 1.707l-.646.647a.5.5 0 0 1-.708 0L8 1.707l-.646.647a.5.5 0 0 1-.708 0L6 1.707l-.646.647a.5.5 0 0 1-.708 0L4 1.707l-.646.647a.5.5 0 0 1-.708 0z"/>
+                  <path d="M3 4.5a.5.5 0 0 1 .5-.5h6a.5.5 0 1 1 0 1h-6a.5.5 0 0 1-.5-.5m0 2a.5.5 0 0 1 .5-.5h6a.5.5 0 1 1 0 1h-6a.5.5 0 0 1-.5-.5m0 2a.5.5 0 0 1 .5-.5h6a.5.5 0 1 1 0 1h-6a.5.5 0 0 1-.5-.5m0 2a.5.5 0 0 1 .5-.5h6a.5.5 0 0 1 0 1h-6a.5.5 0 0 1-.5-.5m8-6a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 0 1h-1a.5.5 0 0 1-.5-.5m0 2a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 0 1h-1a.5.5 0 0 1-.5-.5m0 2a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 0 1h-1a.5.5 0 0 1-.5-.5m0 2a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 0 1h-1a.5.5 0 0 1-.5-.5"/>
+                </svg>              <h5 class="card-title" style="text-align: center;">Sale</h5>
+            </div>
+              <div class="card-body">
+                <h5 class="card-title" style="text-align: center;"><%= dash[0].sale %></h5>
+                <!-- <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p> -->
+              </div>
+            </div>
+            <div class="card shadow p-3 mb-5 bg-body rounded " >
+              <div style="display: flex;justify-content: space-around;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-currency-rupee" viewBox="0 0 16 16">
+                  <path d="M4 3.06h2.726c1.22 0 2.12.575 2.325 1.724H4v1.051h5.051C8.855 7.001 8 7.558 6.788 7.558H4v1.317L8.437 14h2.11L6.095 8.884h.855c2.316-.018 3.465-1.476 3.688-3.049H12V4.784h-1.345c-.08-.778-.357-1.335-.793-1.732H12V2H4z"/>
+                </svg>              <h5 class="card-title" style="text-align: center;">Rs</h5>
+            </div>
+              <div class="card-body">
+                <h5 class="card-title" style="text-align: center;"><%= dash[0].rupee %></h5>
+                <!-- <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p> -->
+              </div>
+            </div>
+            <div class="card shadow p-3 mb-5 bg-body rounded ">
+              <div style="display: flex;justify-content: space-around;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person-circle" viewBox="0 0 16 16">
+                  <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0"/>
+                  <path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1"/>
+                </svg>
+                <h5 class="card-title" style="text-align: center;">Users</h5>
+              </div>
+                <div class="card-body">
+                  <h5 class="card-title" style="text-align: center;"><%= dash[0].user %></h5>
+                  <!-- <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p> -->
+                </div>
+            </div>
+            
+          </div>
+          
+    </div>
+
+    <div class="row">
+        
+        <div class="card-deck col-md-12">
+            <div class="card shadow p-3 mb-5 bg-body rounded ">
+              <div style="display: flex;justify-content: space-around;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-exclamation" viewBox="0 0 16 16">
+                  <path d="M7.002 11a1 1 0 1 1 2 0 1 1 0 0 1-2 0zM7.1 4.995a.905.905 0 1 1 1.8 0l-.35 3.507a.553.553 0 0 1-1.1 0z"/>
+                </svg>              <h5 class="card-title" style="text-align: center;">Cancelled</h5>
+            </div>
+              <div class="card-body">
+                <h5 class="card-title" style="text-align: center;"><%= dash[0].cancell %></h5>
+                <!-- <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p> -->
+              </div>
+            </div>
+            <div class="card shadow p-3 mb-5 bg-body rounded">
+              <div style="display: flex;justify-content: space-around;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-return-left" viewBox="0 0 16 16">
+                  <path fill-rule="evenodd" d="M14.5 1.5a.5.5 0 0 1 .5.5v4.8a2.5 2.5 0 0 1-2.5 2.5H2.707l3.347 3.346a.5.5 0 0 1-.708.708l-4.2-4.2a.5.5 0 0 1 0-.708l4-4a.5.5 0 1 1 .708.708L2.707 8.3H12.5A1.5 1.5 0 0 0 14 6.8V2a.5.5 0 0 1 .5-.5"/>
+                </svg>              <h5 class="card-title" style="text-align: center;">Returned</h5>
+            </div>
+              <div class="card-body">
+                <h5 class="card-title" style="text-align: center;"><%= dash[0].return %></h5>
+                <!-- <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p> -->
+              </div>
+            </div>
+            <div class="card shadow p-3 mb-5 bg-body rounded" >
+              <div style="display: flex;justify-content: space-around;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-book-half" viewBox="0 0 16 16">
+                  <path d="M8.5 2.687c.654-.689 1.782-.886 3.112-.752 1.234.124 2.503.523 3.388.893v9.923c-.918-.35-2.107-.692-3.287-.81-1.094-.111-2.278-.039-3.213.492V2.687zM8 1.783C7.015.936 5.587.81 4.287.94c-1.514.153-3.042.672-3.994 1.105A.5.5 0 0 0 0 2.5v11a.5.5 0 0 0 .707.455c.882-.4 2.303-.881 3.68-1.02 1.409-.142 2.59.087 3.223.877a.5.5 0 0 0 .78 0c.633-.79 1.814-1.019 3.222-.877 1.378.139 2.8.62 3.681 1.02A.5.5 0 0 0 16 13.5v-11a.5.5 0 0 0-.293-.455c-.952-.433-2.48-.952-3.994-1.105C10.413.809 8.985.936 8 1.783"/>
+                </svg>              <h5 class="card-title" style="text-align: center;">Orders Today</h5>
+            </div>
+              <div class="card-body">
+                <h5 class="card-title" style="text-align: center;"><%= dash[0].orderToday %></h5>
+                <!-- <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p> -->
+              </div>
+            </div>
+            <div class="card shadow p-3 mb-5 bg-body rounded" >
+              <div style="display: flex;justify-content: space-around;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-book" viewBox="0 0 16 16">
+                  <path d="M1 2.828c.885-.37 2.154-.769 3.388-.893 1.33-.134 2.458.063 3.112.752v9.746c-.935-.53-2.12-.603-3.213-.493-1.18.12-2.37.461-3.287.811V2.828zm7.5-.141c.654-.689 1.782-.886 3.112-.752 1.234.124 2.503.523 3.388.893v9.923c-.918-.35-2.107-.692-3.287-.81-1.094-.111-2.278-.039-3.213.492V2.687zM8 1.783C7.015.936 5.587.81 4.287.94c-1.514.153-3.042.672-3.994 1.105A.5.5 0 0 0 0 2.5v11a.5.5 0 0 0 .707.455c.882-.4 2.303-.881 3.68-1.02 1.409-.142 2.59.087 3.223.877a.5.5 0 0 0 .78 0c.633-.79 1.814-1.019 3.222-.877 1.378.139 2.8.62 3.681 1.02A.5.5 0 0 0 16 13.5v-11a.5.5 0 0 0-.293-.455c-.952-.433-2.48-.952-3.994-1.105C10.413.809 8.985.936 8 1.783"/>
+                </svg>                <h5 class="card-title" style="text-align: center;">Total Profit</h5>
+              </div>
+                <div class="card-body">
+                  <h5 class="card-title" style="text-align: center;"><%= dash[0].profit %></h5>
+                  <!-- <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p> -->
+                </div>
+            </div>
+            
+          </div>
+          
+    </div>
+    <div class="row" style="margin-bottom: 10px;margin-left: 1px;">
+      <div class="card-deck col-md-12">
+        <div style="margin-left: 5px;">
+            <select name="" id="resultOption" aria-placeholder="choose" style="height: 100%;width: 150px;" onchange="resultOptions()"  >
+              <option value="">choose</option>
+              <option value="Yearly">Yearly</option>
+              <option value="Monthly">Monthly</option>
+              <option value="Weekly">Custom</option>
+            </select>
+        </div>
+
+        <div style="margin-left: 5px;" id="yearOption" onchange="fetchDataYear()">
+          <select name="" id="yearSelect"  style="height: 100%;">
+            <option value="2020">2020</option>
+            <option value="2021">2021</option>
+            <option value="2022">2022</option>
+            <option value="2023">2023</option>
+          </select>
+      </div>
+
+        <div style="margin-left: 5px;" id="monthOption" onchange="fetchDataYear()">
+            <select name="" id="monthSelect" style="height: 100%;">
+              <option value="">Months</option>
+              <option value="January">January</option>
+              <option value="February">February</option>
+              <option value="March">March</option>
+              <option value="May">May</option>
+              <option value="June">June</option>
+              <option value="July">July</option>
+              <option value="Aujust">Aujust</option>
+              <option value="September">September</option>
+              <option value="October">October</option>
+              <option value="November">November</option>
+              <option value="December">December</option>
+            </select>
+        </div>
+
+        <!-- <a href="/admin/pdf/downloard">pdf</a> -->
+
+        <div id="weekOption1" style="margin-left: 25px;">
+          <input type="date" id="customDate" onchange="fetchDataYear()">
+        </div>
+
+        <!-- <div id="weekOption2" style="margin-left: 25px;">
+          <span>End</span>
+          <input type="date">
+        </div> -->
+
+      
+        <button onclick="pdfdownloard()" style="margin-left: 25px;" type="button" class="btn btn-info" id="pdfbtn" >ok</button>
+
+        <div style="margin-left: 10px;" id="goto">
+          
+        </div>
+
+      </div>
+  </div>
+
+    <div class="row" style="margin-top: 100px;padding: 0 200px;">
+    <canvas id="myChart" style=" margin-bottom: 50px;">
+    </canvas>
+
+    </div>
+    <div class="row" style="margin-top: 100px;">
+      <canvas id="myChart2" style=" margin-bottom: 50px;">
+      </canvas>
+  
+      </div>
+    <!-- <div></div> -->
+  </div>
+
+
+<script>
+       let monthOption = document.getElementById("monthOption");
+		monthOption.style.display = "none"; 
+    
+    let yearOption = document.getElementById("yearOption");
+		yearOption.style.display = "none"; 
+
+    let weekOption1 = document.getElementById("weekOption1");
+		weekOption1.style.display = "none";
+
+    let pdfbtn = document.getElementById("pdfbtn");
+		pdfbtn.style.display = "none";
+
+    // let weekOption2 = document.getElementById("weekOption2");
+		// weekOption2.style.display = "none";
+
+    let goto = document.getElementById("goto");
+		goto.style.display = "none";
+    
+    let moderes;
+    let fetchYear ;
+    let fetchDataMonth ;
+    let fetchcustomDate; 
+
+    function resultOptions(){
+      monthOption.style.display = "none";
+      yearOption.style.display = "none";
+      weekOption1.style.display = "none";
+      pdfbtn.style.display = "none";
+      // weekOption2.style.display = "none";
+      goto.style.display = "none";  
+      
+      let resultOption = document.getElementById("resultOption").value;
+      moderes = resultOption
+      console.log(resultOption+"resultOption")
+      if(resultOption == "Yearly"){
+        yearOption.style.display = "block"
+        goto.style.display = "block"
+      }else if(resultOption == "Monthly"){
+        yearOption.style.display = "block"
+        goto.style.display = "block"
+        monthOption.style.display = "block"
+        goto.style.display = "block"
+      }else{
+        weekOption1.style.display = "block"
+        // weekOption2.style.display = "block"
+        goto.style.display = "block"
+      }  
+    }
+
+    function fetchDataYear(){
+
+fetchYear = document.getElementById("yearSelect").value;
+fetchDataMonth = document.getElementById("monthSelect").value;
+fetchcustomDate = document.getElementById("customDate").value;
+pdfbtn.style.display = "block"
+
+ }
+
+ function pdfdownloard(){
+
+console.log("start");
+console.log(fetchcustomDate)
+console.log("end");
+console.log(fetchYear+"fetchYear........")
+console.log(fetchDataMonth+"fetchDataMonth........");
+console.log(moderes,"modeee....")
+
+
+  fetch("/admin/pdf/downloard", {
+              method: "post",
+              headers: {
+                  "Content-Type": "application/json",
+              },
+              body: JSON.stringify({ year:fetchYear , month:fetchDataMonth, mode:moderes, custom:fetchcustomDate}),
+          })
+          .then(response => response.blob())
+            .then(blob => {
+                // Create a download link for the PDF
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'report.pdf';
+                a.click();
+
+                // Clean up the URL object
+                URL.revokeObjectURL(url);
+            })
+              .catch((err) => console.log(err));
+}
+
+
+
+
+addEventListener("DOMContentLoaded",function fetchfulldata(){
+  
+    const mode = 'full'
+    const url = `/admin/graph/data?id=${mode}`;
+
+    const options = {
+        method: 'POST',
+        Headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ id: url })
+      }
+      const type = 'bar';
+      const id = "myChart"
+      fetchdata(url, options, type, id)
+});
+
+
+function chartBar(data, type, id){
+      // Get a reference to the canvas element
+      const ctx = document.getElementById(id).getContext('2d');
+
+      // Set up your data for the chart
+      const labels = data.map(item => item.label); // Assuming each data object has a 'label' property
+      const values = data.map(item => item.value); // Assuming each data object has a 'value' property
+      console.log("values", values);
+      // Create the chart
+      new Chart(ctx, {
+        type: type, // Specify the type of chart you want (bar, line, pie, etc.)
+        data: {
+          labels: labels,
+          datasets: [{
+            label: 'My Data',
+            data: values,
+            backgroundColor: 'rgba(0, 123, 255, 0.5)' // Set a color for the bars
+          }]
+        },
+        options: {
+          // Configure additional options as needed
+          scales: {
+        y: {
+          beginAtZero: true
+        }
+      }
+        }
+      });
+
+}
+
+
+
+function chartLine(data, type, id) {
+  // Get the canvas element by its id
+  const ctx = document.getElementById(id);
+  // Set up your data for the chart
+  const values = data.map(item => item.value); // Assuming each data object has a 'value' property
+  console.log(values);
+  let result = values[0]; // Assuming you want to use the first value as data
+
+  function getMonthLabels(count) {
+    const today = new Date();
+    let monthLabels = [];
+    const months = [
+    'January', 'February', 'March', 'April', 'May', 'June',
+    'July', 'August', 'September', 'October', 'November', 'December'
+  ];
+    for (let i = 0; i < months.length; i++) {
+      monthLabels.push(months[i])
+    }
+    console.log(monthLabels);
+    return monthLabels;
+  }
+
+ 
+
+  const labels = getMonthLabels(7);
+ let chartData = {
+    labels: labels,
+    datasets: [{
+      label: 'My First Dataset',
+      data: result,
+      fill: false,
+      borderColor: 'rgb(75, 192, 192)',
+      tension: 0.1
+    }]
+  };
+     // Create chart
+     new Chart(ctx, {
+    type: type,
+    data: chartData
+  });
+
+
+}
+
+// Usage
+const myData = [
+  { value: 65 }, { value: 59 }, { value: 80 },
+  { value: 81 }, { value: 56 }, { value: 55 },
+  { value: 40 }
+];
+
+// Call the function with data, chart type, and canvas id
+
+function fetchdata(url, options, type, id){
+
+        fetch(url, options)
+        .then(response => response.json())
+        .then(data => {
+          // console.log(data,"data..................");
+          chartBar(data, type, id)
+          chartLine(myData, 'line', 'myChart2');
+
+
+        })
+}
+
+
+
+
+</script>
+
+
+  
+
+<%- include('../partials/admin-footer') %>

@@ -1,0 +1,44 @@
+<%- include('../partials/user-header') %>
+
+    <div style="display: flex; margin-top: 50px;">
+    <div style="flex: 2;"></div>
+    <div style="flex: 2; border: solid 1px;" class="shadow p-3">
+    <form action="#" id="update-adress" >
+        <div class="row">
+            <div class="col-sm-6">
+                <label>Full Name *</label>
+                <input type="hidden" class="form-control" name="id" value="<%= adress._id %>">
+                <input type="text" class="form-control" name="fullname" value="<%= adress.fullname %>" >
+            </div><!-- End .col-sm-6 -->
+
+            <div class="col-sm-6">
+                <label>Phone Number *</label>
+                <input type="text" class="form-control" name="phone1" value="<%= adress.phone1 %>">
+            </div><!-- End .col-sm-6 -->
+        </div><!-- End .row -->
+
+        <label>Pincode *</label>
+        <input type="text" class="form-control" name="pincode" value="<%= adress.pincode %>">
+
+        <label>State</label>
+        <input type="text" class="form-control" name="state" value="<%= adress.state %>">
+
+        <label>City</label>
+        <input type="text" class="form-control" name="city" value="<%= adress.city %>">
+
+        <label>House No</label>
+        <input type="text" class="form-control mb-2" name="houseNo" value="<%= adress.houseNo %>">
+
+        <label>Road Name</label>
+        <input type="text" class="form-control mb-2" name="roadName" value="<%= adress.roadName %>">
+
+        <button type="submit" class="btn btn-outline-primary-2" style="text-align: center;">
+            <span>SAVE CHANGES</span>
+            <i class="icon-long-arrow-right"></i>
+        </button>
+    </form>
+    </div>
+    <div style="flex: 2;"></div>
+</div>
+
+<%- include('../partials/user-footer') %>

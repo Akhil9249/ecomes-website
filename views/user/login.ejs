@@ -7,8 +7,8 @@
                     
                 </div><!-- End .container -->
             </nav><!-- End .breadcrumb-nav -->
-
-            <div class="login-page bg-image pt-8 pb-8 pt-md-12 pb-md-12 pt-lg-17 pb-lg-17" style="background-image: url('assets/images/backgrounds/login-bg.jpg')">
+			
+            <div class="login-page bg-image pt-8 pb-8 pt-md-12 pb-md-12 pt-lg-17 pb-lg-17" style="background-image: url('assets/images/backgrounds/login-bg2.jpg'); background-repeat: no-repeat;background-size: auto;">
             	<div class="container">
             		<div class="form-box">
             			<div class="form-tab">
@@ -24,11 +24,12 @@
 							    </div><!-- .End .tab-pane -->
 							    <div class="tab-pane fade show active" id="register-2" role="tabpanel" aria-labelledby="register-tab-2">
 							    	<!-- onclick="login()" -->
-									<form action="/signin" method="post"  onsubmit=" " id="signinform">
+									<form action="" method="post"  onsubmit="return false" id="signinform">
 							    		<div class="form-group">
 							    			<label for="singin-email-2">Email address *</label>
-							    			<input type="text" onblur="toggleLabelemail()" class="form-control" id="singin-email-2" name="email" >
+							    			<input type="text" onblur="toggleLabelemail(), emailCheckLogin()" class="form-control" id="singin-email-2" name="email" >
 											<p id="myLabelemail" style="color: rgb(218, 30, 30);">Please fill email....</p>
+											<p id="emailValidation" style="color: rgb(218, 30, 30);">Email not valid ....</p>
 											
     									<!-- <button onclick="toggleLabel()">Toggle Label</button> -->
 							    		</div><!-- End .form-group -->
@@ -51,7 +52,8 @@
 											<a href="/forgotnumber" class="forgot-link">Forgot Your Password?</a>
 							    		</div><!-- End .form-footer -->
 							    	</form>
-							    	
+							    	<!-- <div onclick="checkTost()">check</div> -->
+									<!-- ............................ -->
 							    </div><!-- .End .tab-pane -->
 							</div><!-- End .tab-content -->
 						</div><!-- End .form-tab -->
@@ -61,21 +63,28 @@
         </main><!-- End .main -->
 
 		<script>
-		let emailvalue = document.getElementById("singin-email-2").value;
-		let passvalue = document.getElementById("singin-password-2").value;
+		// let emailvalue = document.getElementById("singin-email-2").value;
+		// let passvalue = document.getElementById("singin-password-2").value;
+		function checkTost(){
+			
+		}
 		var labelemail = document.getElementById("myLabelemail");
 		var labelpass = document.getElementById("myLabelpass");
 		labelemail.style.display = "none"; // Hide the label
 		labelpass.style.display = "none"; // Hide the label
 	
 		let signinForm = document.getElementById("signinform")
+
+		let emailValidation = document.getElementById("emailValidation")
+		emailValidation.style.display = "none"; 
+
 		
 
 		function toggleLabelemail(event) {		
-            var labelemail = document.getElementById("myLabelemail");
+            let labelemail = document.getElementById("myLabelemail");
 
 
-			var emailvalue = document.getElementById("singin-email-2");
+			let emailvalue = document.getElementById("singin-email-2");
 			
 			if(emailvalue.value == ""){
 					labelemail.style.display = "block"
@@ -85,17 +94,26 @@
 
 		function toggleLabelpass(event) {		
             
-			var labelpass = document.getElementById("myLabelpass");
+			let labelpass = document.getElementById("myLabelpass");
 
 
 			
-			var passwordvalue = document.getElementById("singin-password-2");
+			let passwordvalue = document.getElementById("singin-password-2");
 
 			if(passwordvalue.value == ""){
 					labelpass.style.display = "block"
 				}
 
         }
+
+		function emailCheckLogin() {
+
+			emailValidation.style.display = "none"; 
+			let emailValue = document.getElementById("singin-email-2").value;
+			if (!/^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/.test(emailValue)) {
+			emailValidation.style.display = "block";
+			}
+		}
 
 
 
@@ -125,8 +143,8 @@
 
 		signinForm.addEventListener("submit",(event)=>{
 			
-			var emailvalue = document.getElementById("singin-email-2");
-			var passwordvalue = document.getElementById("singin-password-2");
+			let emailvalue = document.getElementById("singin-email-2");
+			let passwordvalue = document.getElementById("singin-password-2");
 
 			if(emailvalue.value == "" || passwordvalue.value == ""){
 				
@@ -142,11 +160,17 @@
 				return false;
 				
 			}
+
+			login()
 		})
 
 
 		function login(){
-			console.log("login")
+
+			let emailvalue = document.getElementById("singin-email-2").value;
+			let passvalue = document.getElementById("singin-password-2").value;
+
+			// /signin
 			fetch("/signin", {
                 method: "POST",
                 headers: {
@@ -159,33 +183,22 @@
                     return response.json();               
                 })
                 .then((data) => {
-                    console.log(data);
-					// rpcall(data)
-					// Example usage:
-    				showToast('odder successfull!');
-					// window.location.href = '/';
+					if(data.loginNext == true){
+						showToast('odder successfull');
+						window.location.href = '/';
+					}else if(data.loginNext == "block"){
+						showToast('You are Blocked !');
+						window.location.href = '/login';
+					}else{
+						showToast('wrong email or password !');
+						window.location.href = '/login';
+					}
+
                 })
                 .catch((err) => console.log(err));
 		}
 
-		 // Function to create and display a toast
-		 function showToast(message) {
-        // Create a new div element for the toast
-        var toast = document.createElement('div');
-        toast.id = 'toast';
-        toast.textContent = message;
 
-        // Append the toast to the body
-        document.body.appendChild(toast);
-
-        // Show the toast
-        toast.style.display = 'block';
-
-        // Hide the toast after a delay (e.g., 3 seconds)
-        setTimeout(function() {
-            toast.style.display = 'none';
-        }, 5000);
-    }
 
 
 

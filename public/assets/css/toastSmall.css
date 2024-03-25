@@ -1,0 +1,11 @@
+#toast {
+    display: none;
+    position: fixed;
+    top: 80px;
+    right: 10px;
+    background-color: #9ed40b;
+    color: #fff;
+    border-bottom: solid blue 3px;
+    padding: 10px 50px;
+    border-radius: 5px;
+}

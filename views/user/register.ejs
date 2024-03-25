@@ -8,7 +8,7 @@
                 </div><!-- End .container -->
             </nav><!-- End .breadcrumb-nav -->
 
-            <div class="login-page bg-image pt-8 pb-8 pt-md-12 pb-md-12 pt-lg-17 pb-lg-17" style="background-image: url('assets/images/backgrounds/login-bg.jpg')">
+            <div class="login-page bg-image pt-8 pb-8 pt-md-12 pb-md-12 pt-lg-17 pb-lg-17" style="background-image: url('assets/images/backgrounds/login-bg2.jpg'); background-repeat: no-repeat;background-size: auto;">
             	<div class="container">
             		<div class="form-box">
             			<div class="form-tab">
@@ -28,33 +28,38 @@
 									<form onsubmit="return false" id="add_user" >
 							    		<div class="form-group">
 							    			<label for="register-email">Name *</label>
-							    			<input type="text" class="form-control" id="register-name" name="name" >
+							    			<input type="text" class="form-control" id="register-name" name="name" onblur="formValidation()">
 											<p id="myLabelname" style="color: rgb(218, 30, 30);">Please fill name....</p>
+											<p id="nameValidation" style="color: rgb(218, 30, 30);">Name not valid ....</p>
 							    		</div><!-- End .form-group -->
 
                                         <div class="form-group">
 							    			<label for="register-email">Your email address *</label>
-							    			<input type="email" class="form-control" id="register-email-2" name="email" >
+							    			<input type="email" class="form-control" id="register-email-2" name="email" onblur="formValidation()">
 											<p id="myLabelemail" style="color: rgb(218, 30, 30);">Please fill email....</p>
+											<p id="emailValidation" style="color: rgb(218, 30, 30);">Email not valid ....</p>
 							    		</div><!-- End .form-group -->
 
                                         <div class="form-group">
 							    			<label for="register-email">Mobile Number *</label>
-							    			<input type="text" class="form-control" id="register-number" name="mobile" onkeyup="checknumber()"  onblur="checknumberbl()">
+							    			<input type="text" class="form-control" id="register-number" name="mobile" onkeyup="checknumber()"  onblur="checknumberbl() , formValidation()" >
 											<p id="myLabelmob" style="color: rgb(218, 30, 30);">Please fill mobilenumber....</p>
-											<p id="numberexist" style="color: rgb(218, 30, 30);">Number exist....</p>
+											<p id="numberexist" style="color: rgb(218, 30, 30);">Number exist ....</p>
+											<p id="mobileValidation" style="color: rgb(218, 30, 30);">Mobile number not valid ....</p>
 							    		</div><!-- End .form-group -->
 
 							    		<div class="form-group">
 							    			<label for="register-password-2">Password *</label>
-							    			<input type="password" class="form-control" id="register-password-2" name="password" >
+							    			<input type="password" class="form-control" id="register-password-2" name="password" onkeyup="formValidation()">
 											<p id="myLabelpass" style="color: rgb(218, 30, 30);">Please fill password....</p>
+											<p id="passwordValidation" style="color: rgb(218, 30, 30);">Password not valid ....</p>
 							    		</div><!-- End .form-group -->
 
-                                        <!-- <div class="form-group">
+                                        <div class="form-group">
 							    			<label for="register-password-2">conform Password *</label>
-							    			<input type="password" class="form-control" id="register-password-2" name="register-password" required>
-							    		</div> -->
+							    			<input type="password" class="form-control" id="register-password-1" name="register-password" onblur="numbercrosscheck()">
+											<p id="passwordConfirm" style="color: rgb(218, 30, 30);">Password not match ....</p>
+							    		</div>
 										<!-- End .form-group -->
 
 							    		<div class="form-footer">
@@ -62,10 +67,6 @@
 			                					<span>SIGN UP</span>
 			            						<i class="icon-long-arrow-right"></i>
 			                				</button>
-			                				<div class="custom-control custom-checkbox">
-												<input type="checkbox" class="custom-control-input" id="register-policy-2" required>
-												<label class="custom-control-label" for="register-policy-2">I agree to the <a href="#">privacy policy</a> *</label>
-											</div><!-- End .custom-checkbox -->
 							    		</div><!-- End .form-footer -->
 							    	</form>
 							    	
@@ -91,51 +92,53 @@
 			labelemail.style.display = "none"; // Hide the label
 			labelmob.style.display = "none"; // Hide the label
 			labelpass.style.display = "none"; // Hide the label
-			// const signinForm = document.getElementById("signinforms")
+
+			// ******** formValidation **********
+
+			let nameValidation = document.getElementById("nameValidation")
+			let emailValidation = document.getElementById("emailValidation")
+			let mobileValidation = document.getElementById("mobileValidation")
+			let passwordValidation = document.getElementById("passwordValidation")
+			let passwordConfirm = document.getElementById("passwordConfirm")
+
+			nameValidation.style.display = "none"; 
+			emailValidation.style.display = "none"; 
+			mobileValidation.style.display = "none"; 
+			passwordValidation.style.display = "none";
+			passwordConfirm.style.display = "none";
+
+			// ******** formValidation **********
 			
 			var numberExist = document.getElementById("numberexist");
 			numberExist.style.display = "none";
-
 			let signinForms = document.getElementById("add_user")
 	
 				
-			// function toggleLabel(event) {
-			
+			// function toggleLabel(event) {	
 			// 	var namevalue = document.getElementById("register-name");
 			// 	var emailvalue = document.getElementById("register-email-2");			
 			// 	var numbervalue = document.getElementById("register-number");
-			// 	var passwordvalue = document.getElementById("register-password-2");
-	
-			// 	if(namevalue.value == "" || emailvalue.value == ""  || numbervalue.value == "" || passwordvalue.value == ""){
-					
+			// 	var passwordvalue = document.getElementById("register-password-2");	
+			// 	if(namevalue.value == "" || emailvalue.value == ""  || numbervalue.value == "" || passwordvalue.value == ""){					
 			// 		// event.preventDefault()
-			// 		if(namevalue.value == ""){
-						
+			// 		if(namevalue.value == ""){					
 			// 			labelname.style.display = "block"
 			// 		}
-			// 		if(emailvalue.value == ""){
-							
+			// 		if(emailvalue.value == ""){							
 			// 			labelemail.style.display = "block"
 			// 		}
-			// 		if(numbervalue.value == ""){
-							
+			// 		if(numbervalue.value == ""){							
 			// 			labelmob.style.display = "block"
 			// 		}
-			// 		if(passwordvalue.value == ""){
-							
+			// 		if(passwordvalue.value == ""){							
 			// 			labelpass.style.display = "block"
-			// 		}
-						
-					
-			// 		return false;
-						
-					
+			// 		}				
+			// 		return false;		
 			// 	}
 			// }
 
 
 
-		
 		
 		signinForms.addEventListener("submit",(event)=>{
 		
@@ -283,26 +286,7 @@
 
 	}
 
-	// Function to create and display a toast
-    function showToast(message) {
-		console.log("second")
-        // Create a new div element for the toast
-        var toast = document.createElement('div');
-        toast.id = 'toast';
-        toast.textContent = message;
-
-        // Append the toast to the body
-        document.body.appendChild(toast);
-
-        // Show the toast
-        toast.style.display = 'block';
-
-        // Hide the toast after a delay (e.g., 3 seconds)
-        setTimeout(function() {
-            toast.style.display = 'none';
-			
-        }, 5000);
-    }
+	
 
 
 	

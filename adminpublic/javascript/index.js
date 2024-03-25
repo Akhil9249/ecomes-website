@@ -1,21 +1,17 @@
 
-console.log("indexxxxxxxx")
-
 $("#update-product").submit(function(event){
     event.preventDefault()
-    console.log("first")
     var unindexed_array = $(this).serializeArray() //ethil submit cheytha ella datayum kanum, this ennathu update_user aanu
-    // console.log(unindexed_array)
+    
     var data = {}
 
     $.map(unindexed_array,function(n,i){
         data[n['name']] = n['value']
     })
-    console.log(data)
-    console.log("second")
+    
     var request = {
         "url" : `http://localhost:3000/admin/api/users/${data.id}`,
-        "method" : "PUT",
+        "method" : "patch",
         "data" : data
     }
 
@@ -26,20 +22,18 @@ $("#update-product").submit(function(event){
 
 
 $("#update-category").submit(function(event){
+    console.log("update-category");
     event.preventDefault()
-    console.log("first")
     var unindexed_array = $(this).serializeArray() //ethil submit cheytha ella datayum kanum, this ennathu update_user aanu
-    // console.log(unindexed_array)
     var data = {}
 
     $.map(unindexed_array,function(n,i){
         data[n['name']] = n['value']
     })
-    console.log(data)
-    console.log("second")
+
     var request = {
         "url" : `http://localhost:3000/admin/category/users/${data.id}`,
-        "method" : "PUT",
+        "method" : "patch",
         "data" : data
     }
 
@@ -52,19 +46,15 @@ $("#update-category").submit(function(event){
 
 $("#eidt-category").submit(function(event){
     event.preventDefault()
-    console.log("first")
     var unindexed_array = $(this).serializeArray() 
-    // console.log(unindexed_array)
     var data = {}
 
     $.map(unindexed_array,function(n,i){
         data[n['name']] = n['value']
     })
-    console.log(data)
-    console.log("second")
     var request = {
         "url" : `http://localhost:3000/admin/eidt-category/${data.id}`,
-        "method" : "PUT",
+        "method" : "patch",
         "data" : data
     }
 
@@ -76,25 +66,19 @@ $("#eidt-category").submit(function(event){
 
 $("#update-coupon").submit(function(event){ 
     event.preventDefault()
-    console.log("first")
     var unindexed_array = $(this).serializeArray() //ethil submit cheytha ella datayum kanum, this ennathu update_user aanu
-    // console.log(unindexed_array)
     var data = {}
 
     $.map(unindexed_array,function(n,i){
         data[n['name']] = n['value']
     })
-    console.log(data.id)
-    console.log(data)
-    console.log("second")
 
     const text = data.id
     let id = text.trim();
-    console.log(id+"....")
     var request = {
         
         "url" : `http://localhost:3000/admin/coupon/update/${id}`,
-        "method" : "PUT",
+        "method" : "patch",
         "data" : data
     }
 
@@ -106,25 +90,20 @@ $("#update-coupon").submit(function(event){
 
 $("#update-offer").submit(function(event){ 
     event.preventDefault()
-    console.log("first")
     var unindexed_array = $(this).serializeArray() //ethil submit cheytha ella datayum kanum, this ennathu update_user aanu
-    // console.log(unindexed_array)
     var data = {}
 
     $.map(unindexed_array,function(n,i){
         data[n['name']] = n['value']
     })
-    console.log(data.id)
-    console.log(data)
-    console.log("second")
+
 
     const text = data.id
     let id = text.trim();
-    console.log(id+"....")
     var request = {
         
         "url" : `http://localhost:3000/admin/offer/update/${id}`,
-        "method" : "PUT",
+        "method" : "patch",
         "data" : data
     }
 
@@ -133,11 +112,6 @@ $("#update-offer").submit(function(event){
     })
 })
 
-
-
-
-
 $("#clickbtn").submit(function(event){
     event.preventDefault()
-    console.log("haiii")
 })

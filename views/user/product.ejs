@@ -18,62 +18,9 @@
                     <div class="mb-3 mb-lg-5"></div>
                     <!-- End .mb-3 mb-lg-5 -->
 
-                    <div class="cat-blocks-container">
-                        <div class="row">
-                            <div class="col-6 col-md-3 col-lg-3">
-                                <a href="#" class="cat-block">
-                                    <figure>
-                                        <span>
-                                            <img src="<%= producttop[13].image[0] %>" alt="img" class="product-image" style="width: 100px;height: 100px;" />
-                                        </span>
-                                    </figure>
-
-                                    <h3 class="cat-block-title"><%= producttop[1].name %></h3>
-                                    <!-- End .cat-block-title -->
-                                </a>
-                            </div>
-
-                            <div class="col-6 col-md-3 col-lg-3">
-                                <a href="#" class="cat-block">
-                                    <figure>
-                                        <span>
-                                            <img src="<%= producttop[7].image[0] %>" alt="img" class="product-image" style="width: 100px;height: 100px;" />
-                                        </span>
-                                    </figure>
-
-                                    <h3 class="cat-block-title"><%= producttop[7].name %></h3>
-                                    <!-- End .cat-block-title -->
-                                </a>
-                            </div>
-
-                            <div class="col-6 col-md-3 col-lg-3">
-                                <a href="#" class="cat-block">
-                                    <figure>
-                                        <span>
-                                            <img src="<%= producttop[1].image[0] %>" alt="img" class="product-image" style="width: 100px;height: 100px;" />
-                                        </span>
-                                    </figure>
-
-                                    <h3 class="cat-block-title"><%= producttop[1].name %></h3>
-                                </a>
-                            </div>
-
-                            <div class="col-6 col-md-3 col-lg-3">
-                                <a href="#" class="cat-block">
-                                    <figure>
-                                        <span>
-                                            <img src="<%= producttop[14].image[0] %>" alt="img" class="product-image" style="width: 100px;height: 100px;" />
-                                        </span>
-                                    </figure>
-
-                                    <h3 class="cat-block-title"><%= producttop[14].name %></h3>
-                                </a>
-                            </div>
-                            
-                            <!-- End .col-6 col-md-4 col-lg-3 -->
-                        </div>
-                        <!-- End .row -->
-                    </div>
+                    <!-- <div class="cat-blocks-container">
+                    
+                    </div> -->
                     <!-- End .cat-blocks-container -->
 
                     <div class="mb-2"></div>
@@ -82,64 +29,13 @@
                     <h2 class="title title-border">Featured Items</h2>
                     <!-- End .title -->
 
-                    <div
-                        class="owl-carousel owl-simple owl-nav-top carousel-equal-height carousel-with-shadow"
-                        data-toggle="owl"
-                        data-owl-options='{
-                                    "nav": true, 
-                                    "dots": false,
-                                    "margin": 20,
-                                    "loop": false,
-                                    "responsive": {
-                                        "0": {
-                                            "items":2
-                                        },
-                                        "480": {
-                                            "items":2
-                                        },
-                                        "768": {
-                                            "items":3
-                                        },
-                                        "1200": {
-                                            "items":4
-                                        }
-                                    }
-                                }'
-                    >
-                        <!-- first code ............ -->
-                    </div>
-                    <!-- End .owl-carousel -->
-
                     <div class="mb-4"></div>
-                    <!-- End .mb-4 -->
 
-                    <div class="toolbox">
-                        <div class="toolbox-left">
-                            <div class="toolbox-info">10 Products found</div>
-                            <!-- End .toolbox-info -->
-                        </div>
-                        <!-- End .toolbox-left -->
-
-                        <div class="toolbox-right">
-                            <div class="toolbox-sort">
-                                <label for="sortby">Sort by:</label>
-                                <div class="select-custom">
-                                    <select name="sortby" id="sortby" class="form-control">
-                                        <option value="popularity" selected="selected">Most Popular</option>
-                                        <option value="rating">Most Rated</option>
-                                        <option value="date">Date</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <!-- End .toolbox-sort -->
-                        </div>
-                        <!-- End .toolbox-right -->
-                    </div>
                     <!-- End .toolbox -->
 
                     <div class="products mb-3">
                         <div class="row" id="sample">
-                            <% for(var i=0;i<8;i++){%>
+                            <% for(var i=0;i<4;i++){%>
                                 <div class="col-6 col-md-4 col-xl-3" >
                                     <div class="product">
                                         <figure class="product-media">
@@ -185,41 +81,17 @@
                         </div>
                         <!-- End .row -->
                     </div>
-                    <!-- End .products -->
-
-                    <div class="toolbox">
-                        <div class="toolbox-left">
-                            <div class="toolbox-info">10 Products found</div>
-                            <!-- End .toolbox-info -->
-                        </div>
-                        <!-- End .toolbox-left -->
-
-                        <div class="toolbox-right">
-                            <div class="toolbox-sort">
-                                <label for="sortby">Sort by:</label>
-                                <div class="select-custom">
-                                    <select name="sortby" id="sortby" class="form-control">
-                                        <option value="popularity" selected="selected">Most Popular</option>
-                                        <option value="rating">Most Rated</option>
-                                        <option value="date">Date</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <!-- End .toolbox-sort -->
-                        </div>
-                        <!-- End .toolbox-right -->
-                    </div>
-                    <!-- End .toolbox -->
 
                     <div class="products mb-3">
-                        <!-- Third code ............. -->
+                        
                     </div>
+
                     <!-- End .products -->
 
                     <nav aria-label="Page navigation">
                         <ul class="pagination">
                             <!-- disabled -->
-                            <li class="page-item ">
+                            <li class="page-item " onclick="pageright(-1,'<%= products.length%>')">
                                 <a
                                     class="page-link page-link-prev"
                                     href="#"
@@ -227,15 +99,14 @@
                                     tabindex="-1"
                                     aria-disabled="true"
                                 >
-                                    <span aria-hidden="true"><i class="icon-long-arrow-left" onclick="pagel(8,'<%= products.length%>')"></i></span>Prev
+                                    <span aria-hidden="true"><i class="icon-long-arrow-left" ></i></span>Prev
                                 </a>
+                                
                             </li>
-                            <li class="page-item active" aria-current="page"><a class="page-link" href="#">1</a></li>
-                            <li class="page-item"><a class="page-link" href="#">2</a></li>
-                            <li class="page-item-total">of 2</li>
-                            <li class="page-item">
+                            <li class="page-item active" id="pageid" aria-current="page"><a class="page-link" href="#" id="innerValue">1</a></li>
+                            <li class="page-item" onclick="pageright(1,'<%= products.length%>')">
                                 <a class="page-link page-link-next" href="#" aria-label="Next">
-                                     <span aria-hidden="true" onclick="pager(8,'<%= products.length%>')">Next<i class="icon-long-arrow-right"></i></span>
+                                     <span aria-hidden="true" >Next<i class="icon-long-arrow-right"></i></span>
                                 </a>
                             </li>
                         </ul>
@@ -313,6 +184,7 @@
                                                 id="price-1"
                                                 name="filter-price"
                                                 onclick="priceSort(1)"
+                                                value=""
                                             />
                                             <label class="custom-control-label" for="price-1">Low to High</label>
                                         </div>
@@ -329,6 +201,7 @@
                                                 id="price-2"
                                                 name="filter-price"
                                                 onclick="priceSort(-1)"
+                                                value=""
                                             />
                                             <label class="custom-control-label" for="price-2">High to Low </label>
                                         </div>
@@ -357,8 +230,11 @@
 <script>
     let categorycheckbox = new Array();
     let productvalue = null;
-    let result=0
-    let resultleft=0
+    let sortValue = null;
+    let result=0 ;
+    let resultleft=0 ;
+    let pricdt = null;
+    let Categoriesdt = null ;
     // let prlength=0
 
     function addtocart(i,p) {
@@ -372,15 +248,28 @@
                 console.log(valid+"valid")
                 console.log(pric+"price")
             fetch('/addcart', {
-                method: 'PUT',
+                method: 'put',
                 headers: {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({ id: valid,price:pric }) // Replace this with your data
-            })
+            }).then((response) => {
+                    return response.json();               
+                })
             .then(response => {
-                // Handle the response as needed
+                console.log(response)
+                if(response.alredycart == 0){
+                    // Handle the response as needed
+                showToast('Product added');
                 console.log('PUT request sent');
+                }else{
+
+                        // Handle the response as needed
+                showToast('Product alredy added');
+                console.log('PUT request sent');
+
+                }
+                
             })
             .catch(error => {
                 // Handle any errors
@@ -400,15 +289,28 @@
                 console.log(valid+"valid")
                 console.log(pric+"price")
             fetch('/addwishlist', {
-                method: 'PUT',
+                method: 'put',
                 headers: {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({ id: valid,price:pric }) // Replace this with your data
-            })
+            }).then((response) => {
+                    return response.json();               
+                })
             .then(response => {
-                // Handle the response as needed
+                console.log(response)
+                if(response.alredycart == 0){
+                    // Handle the response as needed
+                showToast('Product added');
                 console.log('PUT request sent');
+                }else{
+
+                        // Handle the response as needed
+                showToast('Product alredy added');
+                console.log('PUT request sent');
+
+                }
+                
             })
             .catch(error => {
                 // Handle any errors
@@ -451,24 +353,19 @@
 
     //*********************** pagination ***********************//
 
-    function pager(value,len){  
-
-        console.log(len)
-        
+    function pageright(value,len){  
+        let innerValue = document.getElementById("innerValue").innerHTML
+        // let innerSort = document.getElementById("innerValue").innerHTML
         result=result+value
-        console.log(result)
-        resultleft=result+8
-
+        resultleft=result+4
         console.log("first")
-        // const value = document.getElementById("searchValue").value
-
         fetch("/poduct/pagin", {
                 method: "post",
                 headers: {
                     "Content-Type": "application/json",
                     // Add any other headers here if needed
                 },
-                body: JSON.stringify({ svalue: result,lvalue: value }),
+                body: JSON.stringify({ svalue: result, lvalue: value , checkbox: categorycheckbox, sortValue,innerValue}),
             })
                 .then((response) => {
                     console.log("5....");
@@ -478,7 +375,11 @@
                 })
                 .then((data) => {
                     console.log( data);
-                    resultcall(data)
+                    // resultcall(data)
+                    let nextpage = data.pop()
+
+                    respagelenght(nextpage)
+                    resultcall(data);
                     
                 })
                 .catch((err) => console.log(err));
@@ -488,97 +389,65 @@
     }
 
 
-
     
-
-    function pagel(value,len){  
-
-    console.log(resultleft+"===res")
-
-    result = resultleft-value
-
-    console.log(result+"result");
-
-    let result2 = resultleft-(value*2)
-
-
-    console.log(result2+"result2")
-
-
-    console.log("first")
-    // const value = document.getElementById("searchValue").value
-
-    fetch("/poduct/pagin", {
-        method: "post",
-        headers: {
-            "Content-Type": "application/json",
-            // Add any other headers here if needed
-        },
-        body: JSON.stringify({ svalue: result2,lvalue: result }),
-    })
-        .then((response) => {
-            console.log("5....");
-            const result = response.json();
-            // console.log(result);
-            return result;
-        })
-        .then((data) => {
-            console.log(data);
-            result=result-value
-            resultcall(data)
-            
-        })
-        .catch((err) => console.log(err));
-
-        console.log(value)
-        }
 
     //*********************** Sort ***********************//
 
-    function priceSort(val) {
-        let value = val;
-        if (value == 1) {
-            // console.log("2....")
-            fetch("/poduct/sortfind", {
+    function priceSort(val){
+        console.log(categorycheckbox,"===categorycheckbox")
+        let innerVal = document.getElementById("innerValue").innerHTML
+        console.log(innerVal,"innerValue");
+        // return;
+         sortValue = val;
+        if (sortValue == 1) {
+            document.getElementById("price-1").value = 1
+            if(Categoriesdt == null){
+                fetch("/poduct/sortfind", {
                 method: "post",
                 headers: {
                     "Content-Type": "application/json",
-                    // Add any other headers here if needed
                 },
-                body: JSON.stringify({ va: value }),
+                body: JSON.stringify({innerValue:innerVal, va: sortValue ,checkbox:categorycheckbox}),
             })
                 .then((response) => {
-                    console.log("5....");
+ 
                     const result = response.json();
-                    // console.log(result);
                     return result;
                 })
                 .then((data) => {
-                    console.log("data==" + data);
-
+                    let nextpage = data.pop()
+                    respagelenght(nextpage)
                     resultcall(data);
                 })
                 .catch((err) => console.log(err));
-        } else if (value == -1) {
-            // console.log("2....")
+            }
+            
+        } else if (sortValue == -1) {
+            document.getElementById("price-2").value = -1
             fetch("/poduct/sortfind", {
                 method: "post",
                 headers: {
                     "Content-Type": "application/json",
                     // Add any other headers here if needed
                 },
-                body: JSON.stringify({ va: value }),
+                body: JSON.stringify({innerValue:innerVal, va: sortValue ,checkbox:categorycheckbox}),
             })
                 .then((response) => {
-                    console.log("5....");
                     const result = response.json();
-                    // console.log(result);
                     return result;
                 })
                 .then((data) => {
-                    console.log("data==" + data);
 
+                    let nextpage = data.pop()
+                    respagelenght(nextpage)
                     resultcall(data);
+
+                    // let ogdata = data.pop()
+                    // let nextpage = data[4]
+                    // console.log(ogdata);
+                    // console.log(nextpage);
+                    // respagelenght(data)
+                    // resultcall(data);
                 })
                 .catch((err) => console.log(err));
         }
@@ -588,20 +457,64 @@
 
     function getCategory(name) {
         const category = name;
+        sortValue = document.querySelector('input[name="filter-price"]:checked')?.value;
+
+        console.log(sortValue,categorycheckbox,"======");
 
         if (categorycheckbox.includes(name)) {
             const index = categorycheckbox.indexOf(name);
-            console.log(index);
             categorycheckbox.splice(index, 1);
-            console.log("slice");
         } else {
             categorycheckbox.push(name);
-            console.log("push");
         }
+        if (categorycheckbox.length == 0){
+            if(sortValue == 1){
+                console.log("sortValue == 1");
+                fetch("/poduct/sortfind", {
+                method: "post",
+                headers: {
+                    "Content-Type": "application/json",
+                    // Add any other headers here if needed
+                },
+                body: JSON.stringify({ va: sortValue ,checkbox:categorycheckbox}),
+            })
+                .then((response) => {
+                    const result = response.json();
+                    return result;
+                })
+                .then((data) => {
+                    // resultcall(data);
+                    let nextpage = data.pop()
+                    respagelenght(nextpage)
+                    resultcall(data);
+                });
 
-        console.log(categorycheckbox);
+            }else if(sortValue == -1){
 
-        if (categorycheckbox.length > 0) {
+                console.log("sortValue == -1");
+                console.log(sortValue,categorycheckbox);
+
+                fetch("/poduct/sortfind", {
+                method: "post",
+                headers: {
+                    "Content-Type": "application/json",
+                    // Add any other headers here if needed
+                },
+                body: JSON.stringify({ va: sortValue ,checkbox:categorycheckbox}),
+            })
+                .then((response) => {
+                    const result = response.json();
+                    return result;
+                })
+                .then((data) => {
+                    console.log("popppppp");
+                    // resultcall(data);
+                    let nextpage = data.pop()
+                    respagelenght(nextpage)
+                    resultcall(data);
+                });
+
+            }else{
             fetch("/poduct/filter", {
                 method: "post",
                 headers: {
@@ -612,19 +525,107 @@
             })
                 .then((response) => {
                     const result = response.json();
-                    console.log(result);
-                    // productvalue = result;
                     return result;
                 })
                 .then((data) => {
-                    console.log(data);
-                    console.log("data==" + data);
+                    // resultcall(data);
+                    let nextpage = data.pop()
+                    respagelenght(nextpage)
                     resultcall(data);
                 });
+            }
+        }
+
+        if (categorycheckbox.length > 0) {
+
+            if(sortValue == 1){
+
+                console.log("first");
+                fetch("/poduct/sortfind", {
+                method: "post",
+                headers: {
+                    "Content-Type": "application/json",
+                    // Add any other headers here if needed
+                },
+                body: JSON.stringify({ va: sortValue ,checkbox:categorycheckbox}),
+            })
+                .then((response) => {
+                    const result = response.json();
+                    return result;
+                })
+                .then((data) => {
+                    // resultcall(data);
+                    let nextpage = data.pop()
+                    respagelenght(nextpage)
+                    resultcall(data);
+                });
+
+            }else if(sortValue == -1){
+
+                console.log("second");
+                fetch("/poduct/sortfind", {
+                method: "post",
+                headers: {
+                    "Content-Type": "application/json",
+                    // Add any other headers here if needed
+                },
+                body: JSON.stringify({ va: sortValue ,checkbox:categorycheckbox}),
+            })
+                .then((response) => {
+                    const result = response.json();
+                    return result;
+                })
+                .then((data) => {
+                    // resultcall(data);
+                    let nextpage = data.pop()
+                    respagelenght(nextpage)
+                    resultcall(data);
+                });
+
+            }else{
+                console.log("third");
+
+            fetch("/poduct/filter", {
+                method: "post",
+                headers: {
+                    "Content-Type": "application/json",
+                    // Add any other headers here if needed
+                },
+                body: JSON.stringify(categorycheckbox),
+            })
+                .then((response) => {
+                    const result = response.json();
+                    return result;
+                })
+                .then((data) => {
+                    // resultcall(data);
+                    let nextpage = data.pop()
+                    respagelenght(nextpage)
+                    resultcall(data);
+                });
+            }
         }
     }
 
     //*********************** Resultcall ***********************//
+    function respagelenght(data){
+
+        let productdiv = document.getElementById("pageid");
+        productdiv.innerHTML = "";
+        // data.forEach((element,num)=>{
+        //     const item =` <a class="page-link" href="#">${num}</a>`
+        //     productdiv.innerHTML += item;
+        // })
+        // for(let i=1;i<=lengthRes;i++){
+        //     const item =` <a class="page-link" href="#">${i}</a>`
+        //     productdiv.innerHTML += item;
+        // }
+        // const item =` <a class="page-link" href="#" >${data}</a>`
+        //     productdiv.innerHTML += item;
+
+            const item = `<li class="page-item active" id="pageid" aria-current="page"><a class="page-link" href="#" id="innerValue">${data}</a></li>`
+            productdiv.innerHTML += item;
+    }
 
     function resultcall(data) {
         let productdiv = document.getElementById("sample");
@@ -632,7 +633,7 @@
         productdiv.innerHTML = "";
 
         data.forEach((element) => {
-            console.log(element.image);
+            // console.log(element.image);
             const item = ` 
         <div class="col-6 col-md-4 col-xl-3">
                                     <div class="product">
@@ -677,3 +678,5 @@
 </script>
 
 <%- include('../partials/user-footer') %>
+
+

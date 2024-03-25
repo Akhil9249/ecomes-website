@@ -1,86 +1,102 @@
 const express = require("express");
 const router = express();
 const adminControllers = require("../controller/adminControllers");
+const middleware = require("../middleware/adminAuth")
 const multer = require("../util/multer");
+const session = require("express-session");
+const { v4: uuidv4 } = require("uuid");
 
-// const multer = require('../middleware/upload')
 // const api=require('../server/services/render')
-// admin/pages/samples/login.html
 
-router.get("/login", adminControllers.adminLogin);
+router.use(
+    session({
+        secret: uuidv4(),
+        resave: false,
+        saveUninitialized: true,
+    })
+);
 
-router.get("/index", adminControllers.index);
+router.get("/login", adminControllers.adminLogin); 
 
-router.get("/", adminControllers.dashboard);
+router.post("/signIn/post", adminControllers.signIn_post);
 
-router.get("/product", adminControllers.product);
+router.get("/logout", adminControllers.logout);
 
-router.get("/product-add", adminControllers.product_add);
+router.get("/index", middleware.role, adminControllers.index);
 
-router.get("/update-products", adminControllers.update_products);
+router.get("/", middleware.role, adminControllers.dashboard);
 
-// router.get('/productupdate',adminControllers.product_update)
+router.get("/product", middleware.role, adminControllers.product);
 
-router.get("/category", adminControllers.category);
+router.post("/poduct/pagin", adminControllers.poductpagin);
 
-router.get("/addCategory", adminControllers.addCategory);
+router.get("/product-add", middleware.role, adminControllers.product_add);
 
-router.get("/editCategory", adminControllers.editCategory);
+router.get("/update-products", middleware.role, adminControllers.update_products);
 
-router.get("/block-user", adminControllers.block_user);
+router.get("/category", middleware.role, adminControllers.category);
 
-router.get("/editcategoryupdate", adminControllers.editcategoryupdate);
+router.get("/addCategory", middleware.role, adminControllers.addCategory);
 
-router.get("/order", adminControllers.order_details);
+router.get("/editCategory", middleware.role, adminControllers.editCategory);
+
+router.get("/block-user", middleware.role, adminControllers.block_user);
+
+router.get("/editcategoryupdate", middleware.role, adminControllers.editcategoryupdate);
+
+router.get("/order", middleware.role, adminControllers.order_details);
 
 router.put("/status/change", adminControllers.status_change);
 
-router.get("/coupon", adminControllers.coupon_get);
+router.get("/coupon", middleware.role,  adminControllers.coupon_get);
 
-router.get("/addCoupon", adminControllers.addCoupon);
+router.get("/addCoupon", middleware.role, adminControllers.addCoupon);
 
 router.post("/addCouponPost", adminControllers.addCouponPost);
 
-router.get("/editCoupon", adminControllers.editCoupon);
+router.get("/editCoupon", middleware.role, adminControllers.editCoupon);
 
-router.get("/offer", adminControllers.offer_get);
+router.get("/offer", middleware.role, adminControllers.offer_get);
 
 router.post("/addOfferPost", adminControllers.addOfferPost);
 
-router.get("/addOffer", adminControllers.addOffer);
+router.get("/addOffer", middleware.role, adminControllers.addOffer);
 
-router.get("/editOffer", adminControllers.editOffer);
+router.get("/editOffer", middleware.role, adminControllers.editOffer);
 
-router.get("/block-products", adminControllers.block_products);
+router.get("/block-products", middleware.role, adminControllers.block_products);
 
-router.get("/block-offer", adminControllers.block_offer);
+router.get("/block-offer", middleware.role, adminControllers.block_offer);
 
-router.get("/block-coupon", adminControllers.block_coupon);
+router.get("/block-coupon", middleware.role, adminControllers.block_coupon);
 
 router.post("/graph/data", adminControllers.graph_data);
 
+router.get("/pdf", middleware.role, adminControllers.pdf);
 
-//api
+router.post("/invoice/data", adminControllers.invoice);
+
+router.post("/pdf/downloard", adminControllers.pdf_downloard);
+
 router.post("/product-add", multer.upload.array("simage"), adminControllers.product_add_post);
 
 router.post("/addCategory", adminControllers.categorypost);
 
 router.post("/admin/product-edit", adminControllers.product_edit);
 
-router.put("/api/users/:id", adminControllers.product_update);
+router.patch("/api/users/:id", adminControllers.product_update);
 
-router.put("/category/users/:id", adminControllers.category_update);
+router.patch("/category/users/:id", adminControllers.category_update); //put change
 
-router.put("/coupon/update/:id", adminControllers.coupon_update);
+router.patch("/coupon/update/:id", adminControllers.coupon_update);
 
-router.put("/offer/update/:id", adminControllers.offer_update);
+router.patch("/offer/update/:id", adminControllers.offer_update);
 
-router.put("/eidt-category/:id", adminControllers.eidt_category);
+router.patch("/eidt-category/:id", adminControllers.eidt_category);
 
 
-
+// router.get('/productupdate',adminControllers.product_update)
 // router.get('/admin/users',adminControllers.find)
-
 // router.get('/admin/users',api.find)
 
 module.exports = router;

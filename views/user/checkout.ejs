@@ -107,7 +107,6 @@
 
 		                						</tr>
 
-		                						
 		                						<tr class="summary-subtotal">
 		                							<td>Subtotal:</td>
 		                							<td><%= userdt.cart.totalPrice %></td>
@@ -196,12 +195,7 @@
 									
 		                		<aside class="col-lg-5">
 
-
-
-
 										<!-- ............................ -->
-
-
 
 										<% for(var i=0;i<productad.length;i++){%>
 										
@@ -271,14 +265,9 @@
 										</form>
 
 
-
-
-
 									<!-- ............................ -->
 
-
-
-		                			
+	
 		                		</aside><!-- End .col-lg-3 -->
 		                	</div><!-- End .row -->
             			
@@ -305,7 +294,7 @@
 				let cop = document.getElementById("checkout-discount-input").value
 				console.log(cop+"cop")
 				fetch('/couponCodeCheck', {
-                method: 'PUT',
+                method: 'put',
                 headers: {
                     'Content-Type': 'application/json'
                 },
@@ -324,9 +313,25 @@
 			function odderPost(){
 
 				console.log(addressval)
-				console.log(paymentval)
-				
-				fetch("/oddersuccesspost", {
+				console.log(paymentval) 
+				// /oddersuccesspost
+				fetch("/odder/successpost/Check", {
+                method: "post",
+                headers: {
+                    "Content-Type": "application/json",
+                    // Add any other headers here if needed
+                },
+                body: JSON.stringify({}),
+            })
+                .then((response) => {
+                    return response.json();
+                
+                })
+                .then((data) => {
+					console.log("data response");
+					if(data.odderNext == true){
+							
+						fetch("/oddersuccesspost", {
                 method: "post",
                 headers: {
                     "Content-Type": "application/json",
@@ -339,12 +344,29 @@
                 
                 })
                 .then((data) => {
-                    console.log(data);
-					// if(data==quentityLess){
-					// 	quentityLess()
-					// }
+					
+					if(data?.payment == "Cash on delivery" ){
+						
+						console.log("Cash on delivery odder successful");
+						showToast('odder successful');
+						window.location.href = '/oddersuccess';
+					}else{
+						console.log("razorpay odder successful");
+						console.log(data);
+						
+						rpcall(data)
+						
+					}
 
-					rpcall(data)
+                })
+                .catch((err) => console.log(err));
+
+					}else{
+						console.log("odderNext false continue");
+						showToast('Product not avilable');
+					}
+
+					// rpcall(data)
 					// Example usage:
     				// showToast('odder successfull!');
                 })
@@ -362,18 +384,26 @@
 			// 	}
 
 				function rpcall(data){
+
+					console.log("rpcall start");
+					let {amount,id} = data.order
+					console.log(amount,id)
+					console.log(typeof(amount));
+
 					var options = {
     "key": "rzp_test_zVBhrL4CVfIezv", // Enter the Key ID generated from the Dashboard
-    "amount": "50000", // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+    "amount": amount, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
     "currency": "INR",
     "name": "Acme Corp",
     "description": "Test Transaction",
     "image": "https://example.com/your_logo",
     "order_id": data.id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
     "handler": function (response){
-        alert(response.razorpay_payment_id);
-        alert(response.razorpay_order_id);
-        alert(response.razorpay_signature)
+        // alert(response.razorpay_payment_id);
+        // alert(response.razorpay_order_id);
+        // alert(response.razorpay_signature)
+		showToast('Odder successful');
+		window.location.href = '/oddersuccess';
     },
     "prefill": {
         "name": "Gaurav Kumar",
@@ -390,6 +420,9 @@
 
 var rzp1 = new Razorpay(options);
 rzp1.on('payment.failed', function (response){
+
+	// showToast('Odder Failed');
+
         alert(response.error.code);
         alert(response.error.description);
         alert(response.error.source);

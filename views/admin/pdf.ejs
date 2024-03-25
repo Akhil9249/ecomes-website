@@ -1,0 +1,243 @@
+<%- include('../partials/admin-header') %>
+
+
+
+<div class="main-panel">
+    <div class="content-wrapper">
+
+
+      <div class="row" style="margin-bottom: 10px;margin-left: 1px;">
+        <div class="card-deck col-md-12">
+          <div style="margin-left: 5px;">
+              <select name="" id="resultOption" aria-placeholder="choose" style="height: 100%;width: 150px;" onchange="resultOptions()"  >
+                <option value="">choose</option>
+                <option value="Yearly">Yearly</option>
+                <option value="Monthly">Monthly</option>
+                <option value="Weekly">Custom</option>
+              </select>
+          </div>
+
+          <div style="margin-left: 5px;" id="yearOption" onchange="fetchDataYear()">
+            <select name="" id="yearSelect"  style="height: 100%;">
+              <option value="2020">2020</option>
+              <option value="2021">2021</option>
+              <option value="2022">2022</option>
+              <option value="2023">2023</option>
+            </select>
+        </div>
+
+          <div style="margin-left: 5px;" id="monthOption" onchange="fetchDataYear()">
+              <select name="" id="monthSelect" style="height: 100%;">
+                <option value="">Months</option>
+                <option value="01">January</option>
+                <option value="02">February</option>
+                <option value="03">March</option>
+                <option value="04">April</option>
+                <option value="05">May</option>
+                <option value="06">June</option>
+                <option value="07">July</option>
+                <option value="08">Aujust</option>
+                <option value="09">September</option>
+                <option value="10">October</option>
+                <option value="11">November</option>
+                <option value="12">December</option>
+              </select>
+          </div>
+
+          <!-- <a href="/admin/pdf/downloard">pdf</a> -->
+ 
+          <div id="weekOption1" style="margin-left: 25px;">
+            <input type="date" id="customDate" onchange="fetchDataYear()">
+          </div>
+
+          <!-- <div id="weekOption2" style="margin-left: 25px;">
+            <span>End</span>
+            <input type="date">
+          </div> -->
+
+        
+          <button onclick="pdfdownloard()" style="margin-left: 25px;" type="button" class="btn btn-info" id="pdfbtn" >PDF</button>
+
+          <div style="margin-left: 10px;" id="goto">
+            
+          </div>
+
+        </div>
+    </div>
+      
+      <!-- start......................................................... -->
+      <div class="row ">
+        <div class="col-12 grid-margin">
+          <div class="card">
+            <div class="card-body">
+              <h4 class="card-title">Order Status</h4>
+              <div class="table-responsive">
+                <table class="table">
+                  <thead>
+                    <tr>
+                      
+                      
+                      
+                      <th> Name </th>
+                      <th > Image  </th>
+                      <th style="text-align: center;"> Quanty </th>
+                      <th> Name </th>
+                      <th> Total </th>
+                      <th>Status</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+
+                    <% for(var i=0;i<orders.length;i++){%>
+                      <tr style="border: solid 5px;">
+                      <% for(var j=0 ;j<orders[i].products.item.length ;j++) {%>
+                        <tr >
+                        <% for(var k=0;k<product.length;k++) {%>
+                          
+                         <% if(product[k]._id.toString()  ==  orders[i].products.item[j].productId.toString()){ %>  
+                            
+                            
+                          
+
+                            <td ><%= product[k].name %></td>
+                            <td><img src="<%= product[k].image[0] %>" alt="" style="width: 50px; height: 50px;" ></td>
+                            
+                            <td style="text-align: center;"><%= orders[i].products.item[j].qty %></td>
+                            
+                            <% if(j==0){ %>
+                                <td><%= orders[i].fullname %></td>
+                                <% }%>
+
+                            <% if(j==0){ %>
+                              <td><%= orders[i].products.totalPrice %></td>
+                              <% }%>
+
+                              <% if(j==0){ %>
+                            <td class="orderStatus"><%= orders[i].status %></td>
+                            <% }%>
+
+                          <% }%>
+                         
+                        <%}%>
+                        
+                      </tr>
+                      
+                      <%}%>
+                      
+                    </tr>
+                  <%}%>
+
+                  
+
+
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+  <!-- end......................................................... -->
+
+      
+    </div>  
+    </div>
+
+
+    <script>
+
+       let monthOption = document.getElementById("monthOption");
+		monthOption.style.display = "none"; 
+    
+    let yearOption = document.getElementById("yearOption");
+		yearOption.style.display = "none"; 
+
+    let weekOption1 = document.getElementById("weekOption1");
+		weekOption1.style.display = "none";
+
+    let pdfbtn = document.getElementById("pdfbtn");
+		pdfbtn.style.display = "none";
+
+    // let weekOption2 = document.getElementById("weekOption2");
+		// weekOption2.style.display = "none";
+
+    let goto = document.getElementById("goto");
+		goto.style.display = "none";
+    
+    let moderes;
+    let fetchYear ;
+    let fetchDataMonth ;
+    let fetchcustomDate;
+
+
+    function resultOptions(){
+      monthOption.style.display = "none";
+      yearOption.style.display = "none";
+      weekOption1.style.display = "none";
+      pdfbtn.style.display = "none";
+      // weekOption2.style.display = "none";
+      goto.style.display = "none";  
+      
+      let resultOption = document.getElementById("resultOption").value;
+      moderes = resultOption
+      console.log(resultOption+"resultOption")
+      if(resultOption == "Yearly"){
+        yearOption.style.display = "block"
+        goto.style.display = "block"
+      }else if(resultOption == "Monthly"){
+        yearOption.style.display = "block"
+        goto.style.display = "block"
+        monthOption.style.display = "block"
+        goto.style.display = "block"
+      }else{
+        weekOption1.style.display = "block"
+        // weekOption2.style.display = "block"
+        goto.style.display = "block"
+      }  
+    }
+
+
+    function fetchDataYear(){
+
+ fetchYear = document.getElementById("yearSelect").value;
+ fetchDataMonth = document.getElementById("monthSelect").value;
+ fetchcustomDate = document.getElementById("customDate").value;
+ pdfbtn.style.display = "block"
+
+  }
+
+function pdfdownloard(){
+
+console.log("start");
+console.log(fetchcustomDate)
+console.log("end");
+console.log(fetchYear+"fetchYear........")
+console.log(fetchDataMonth+"fetchDataMonth........");
+console.log(moderes,"modeee....")
+
+
+  fetch("/admin/pdf/downloard", {
+              method: "post",
+              headers: {
+                  "Content-Type": "application/json",
+              },
+              body: JSON.stringify({ year:fetchYear , month:fetchDataMonth, mode:moderes, custom:fetchcustomDate}),
+          })
+          .then(response => response.blob())
+            .then(blob => {
+                // Create a download link for the PDF
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'report.pdf';
+                a.click();
+
+                // Clean up the URL object
+                URL.revokeObjectURL(url);
+            })
+              .catch((err) => console.log(err));
+}
+
+  </script>
+
+<%- include('../partials/admin-footer') %>

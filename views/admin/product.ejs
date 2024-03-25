@@ -28,8 +28,8 @@
                             <th> Edit </th>
                           </tr>
                         </thead>
-                        <tbody>
-                          <% for(var i=0;i<products.length;i++){%>
+                        <tbody id="sample">
+                          <% for(var i=0;i<6;i++){%>
                           <tr>
                             <td><%= i+1 %></td>
                             <td><%= products[i].name %></td>
@@ -69,12 +69,106 @@
               </div>
             </div>
         <!-- end......................................................... -->
-
+        <div>
+          <nav aria-label="Page navigation example">
+            <ul class="pagination">
+              <li class="page-item"><a class="page-link" href="#" onclick="pagination(-1)">Previous</a></li>
+              <li class="page-item"><a class="page-link" href="#" onclick="pagination(-1)"><-</a></li>
+              <li class="page-item" id="pageid"><a class="page-link" href="#" id="innerValue">1</a></li>
+              <li class="page-item"><a class="page-link" href="#" onclick="pagination(1)" >-></a></li>
+              <li class="page-item"><a class="page-link" href="#" onclick="pagination(1)">Next</a></li>
+            </ul>
+          </nav>
+        </div>
+       
             
             
           </div>
+          
           <!-- content-wrapper ends -->
           <!-- partial:partials/_footer.html -->
+
+          <script>
+
+
+function pagination(value){  
+        let innerValue = document.getElementById("innerValue").innerHTML
+        // let innerSort = document.getElementById("innerValue").innerHTML
+        console.log("first")
+        fetch("/admin/poduct/pagin", {
+                method: "post",
+                headers: {
+                    "Content-Type": "application/json",
+                    // Add any other headers here if needed
+                },
+                body: JSON.stringify({ nextValue: value ,innerValue}),
+            })
+                .then((response) => {
+                    console.log("5....");
+                    const result = response.json();
+                    // console.log(result);
+                    return result;
+                })
+                .then((data) => {
+                    console.log( data);
+                    // resultcall(data)
+                    let nextpage = data.pop()
+
+                    respagelenght(nextpage)
+                    resultcall(data);
+                    
+                })
+                .catch((err) => console.log(err));
+
+
+        console.log(value)
+    }
+
+
+    function respagelenght(data){
+
+let productdiv = document.getElementById("pageid");
+productdiv.innerHTML = "";
+
+    const item = `<li class="page-item" id="pageid" ><a class="page-link" href="#" id="innerValue">${data}</a></li>`
+    productdiv.innerHTML += item;
+}
+
+function resultcall(element) {
+        let productdiv = document.getElementById("sample");
+
+        productdiv.innerHTML = "";
+
+        element.forEach((data,index) => {
+            // console.log(element.image);
+            const item = ` 
+            <tr>
+                            <td>${index+1}</td>
+                            <td>${data.name}</td>
+                            <td>${data.category}</td>
+                            <td>
+                              <a href="">
+                        ${data.image ? `<img src="${data.image[0]}" width="100vw" height="100vh" alt="img">` : 'Image Not Found'}
+                              </a>
+                              </td>
+                            <td>${data.description}</td>
+                            <td>${data.price}</td>
+                            <td> ${data.stock}</td>
+                            <td>
+                              ${data.isAvailable ? `<a href="/admin/block-products?id=${data._id}" style="text-decoration: none;"><div class="badge badge-outline-success">Block</div></a>` : `<a href="/admin/block-products?id=${data._id}" style="text-decoration: none;"><div class="badge badge-outline-success">UnBlock</div></a>`}
+                            </td>
+                            <td>
+                              <a href="/admin/update-products?id=${data._id}" class="btn border-shadow update">
+                                <span class="text-gradient"><i class="fas fa-pencil-alt"></i></span>
+                            </a>                            
+                          </td>
+                          </tr>
+        `;
+            productdiv.innerHTML += item;
+        });
+    }
+
+          </script>
           
 
           <%- include('../partials/admin-footer') %>

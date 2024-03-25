@@ -1,0 +1,81 @@
+<%- include('../partials/admin-header') %>
+
+     
+        <!-- partial -->
+        <div class="main-panel">
+          <div class="content-wrapper">
+            
+            <!-- start......................................................... -->
+            <div class="row ">
+              <div class="col-12 grid-margin">
+                <div class="card">
+                  <div class="card-body" >
+                    <div style="display: flex;">
+                        <div style="width: 55%;">
+                            <h4 class="card-title" style="text-align: end;">Coupon</h4>
+
+                        </div>
+                        <div style="width: 45%;text-align: end;">
+                            <a href="/admin/addCoupon" style="text-decoration: none;"><div class="badge badge-outline-success">Add Coupon</div></a> 
+
+                        </div>
+                    </div>
+                    
+                    
+
+                    <br>
+                    <div class="table-responsive">
+                      <table class="table">
+                        <thead>
+                          <tr>                          
+                            <th> No </th>
+                            <th> Name </th>
+                            <th>Code</th>
+                            <th>off percent</th>
+                            <th style="text-align: center;">Max off</th>
+                            <th>count</th>
+                            <th>peimision</th>
+                            <th>Edit</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                        <% for(var i =0;i<category.length;i++) {%>
+                          <tr>
+                            <td><%= i+1%></td>
+                            <td><%= category[i].name %></td>
+                            <td><%= category[i].code %></td>
+                            <td><%= category[i].percent %></td>
+                            <td style="text-align: center;"><%= category[i].maxoff %></td>
+                            <td><%= category[i].count %></td>
+                            
+                            <td>
+                              <% if(category[i].avilable == true) { %>
+                                <a href="/admin/block-coupon?id=<%= category[i]._id%>" style="text-decoration: none;"><div class="badge badge-outline-success">Block</div></a> 
+                                <%}else{%>
+                                  <a href="/admin/block-coupon?id=<%= category[i]._id%>" style="text-decoration: none;"><div class="badge badge-outline-success">UnBlock</div></a>  
+                                <%}%>                               
+                            </td>
+                            <td>
+                              <a href="/admin/editCoupon?id=<%= category[i]._id%>" class="btn border-shadow update">
+                                <span class="text-gradient"><i class="fas fa-pencil-alt"></i></span>
+                            </a>                            
+                          </td>
+                          </tr>
+                         <%}%>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+        <!-- end......................................................... -->
+
+            
+            
+          </div>
+          <!-- content-wrapper ends -->
+          <!-- partial:partials/_footer.html -->
+          
+
+          <%- include('../partials/admin-footer') %>

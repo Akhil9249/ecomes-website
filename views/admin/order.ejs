@@ -1,0 +1,188 @@
+<%- include('../partials/admin-header') %>
+
+     
+        <!-- partial -->
+        <div class="main-panel">
+          <div class="content-wrapper">
+            
+            <!-- start......................................................... -->
+            <div class="row ">
+              <div class="col-12 grid-margin">
+                <div class="card">
+                  <div class="card-body">
+                    <h4 class="card-title">Order Status</h4>
+                    <div class="table-responsive">
+                      <table class="table">
+                        <thead>
+                          <tr>
+                            
+                            
+                            
+                            <th> Name </th>
+                            <th > Image  </th>
+                            <th style="text-align: center;"> Quanty </th>
+                            <th> phone </th>
+                            <th>Status</th>
+                            <th>Change Status</th>
+                            
+                            
+                          </tr>
+                        </thead>
+                        <tbody>
+
+                          <% for(var i=0;i<orders.length;i++){%>
+                            <tr style="border: solid 5px;">
+                            <% for(var j=0 ;j<orders[i].products.item.length ;j++) {%>
+                              <tr >
+                              <% for(var k=0;k<product.length;k++) {%>
+                                
+                               <% if(product[k]._id.toString()  ==  orders[i].products.item[j].productId.toString()){ %>  
+                                  
+                                  
+                                
+
+                                  <td ><%= product[k].name %></td>
+                                  <td><img src="<%= product[k].image[0] %>" alt="" style="width: 50px; height: 50px;" ></td>
+                                  
+                                  <td style="text-align: center;"><%= orders[i].products.item[j].qty %></td>
+                                  
+                                  <% if(j==0){ %>
+                                    <td><%= orders[i].phone1 %></td>
+                                    <% }%>
+                                  
+                                    <% if(j==0){ %>
+                                  <td class="orderStatus"><%= orders[i].status %></td>
+                                  <% }%>
+
+                                  <% if(j==0){ %>
+                                  <td>
+                                  <select  order-id="<%= orders[i]._id %>"  class="orderStatusChange">
+                                      <option value=""></option>
+                                      <option value="order confirmed" >order confirmed</option>
+                                      <option value="shipped" >shipped</option>
+                                      <option value="delivered" >delivered</option>
+                                      <option value="cancell" >cancel</option>
+                                      <option value="returned" >returned</option>
+                                  </select>
+                                  </td>
+                                  <% }%>
+                                
+                                
+                                
+                                <% }%>
+                               
+                              <%}%>
+                              
+                            </tr>
+                            
+                            <%}%>
+                            
+                          </tr>
+                        <%}%>
+
+                        
+
+
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+        <!-- end......................................................... -->
+
+            
+          </div>  
+          </div>
+
+          <script>
+
+           let arr=document.querySelectorAll(".orderStatus")
+           
+           let arr2=document.querySelectorAll(".orderStatusChange")
+
+           arr2.forEach((element,index)=>{
+            element.addEventListener('change',()=>{
+            arr[index].innerHTML = element.value
+              orderId = element.getAttribute('order-id')
+              console.log(orderId+"oderid")
+            fetch("/admin/status/change", {
+                method: "put",
+                headers: {
+                    "Content-Type": "application/json",
+                    // Add any other headers here if needed
+                },
+                body: JSON.stringify({ value : element.value , idvalue: orderId}),
+            })
+                .then((response) => {
+                    console.log("5....");
+                    const result = response.json();
+                   
+                    return result;
+                })
+                .then((data) => {
+                    console.log("data==" + data);
+
+                })
+                // .then(res=>{window.location.reload()})
+                .catch((err) => console.log(err));
+            })
+           })
+            
+
+           arr.forEach((element,index)=>{
+            changeArr = ['','order confirmed','shipped','delivered','returned']
+            const orderStatus = element.innerHTML
+            const status = changeArr.indexOf(orderStatus)
+            if (status>=0){
+              arr2[index].value =orderStatus;
+
+              let options = arr2[index].getElementsByTagName("option");
+
+              let selectedIndex = Array.from(options).findIndex(option => option.value === orderStatus);
+
+            for (let i = 0; i < selectedIndex; i++) {
+                options[i].disabled = true;
+             
+              
+            }
+
+          }
+            
+           })
+
+           arr2.forEach((element,index)=>{
+            element.addEventListener('change',()=>{
+
+              let options = element.getElementsByTagName("option");
+
+              let selectedIndex = Array.from(options).findIndex(option => option.value === arr[index].innerHTML);
+
+            for (let i = 0; i < selectedIndex; i++) {
+                options[i].disabled = true;
+                
+            }
+            window.location.reload()
+            })
+           })
+
+            // function statusChange(id){
+            //   let idval = id
+            //   var val = document.getElementById(id).value;
+            //   let arr=document.querySelectorAll(".orderStatus")
+            //   arr.forEach((element,index)=>{
+            //     console.log(val+"...................",element.innerHTML)
+            //   })
+            // }
+
+
+
+
+
+
+
+          </script>
+          
+
+          <%- include('../partials/admin-footer') %>

@@ -6,6 +6,7 @@ const Ordersdb = require("../models/ordersModel");
 const Offer = require("../models/offerModel");
 const Coupon = require("../models/couponModel");
 const Dashdb = require("../models/dashModel");
+const Salesdb = require("../models/salesReport");
 const Razorpay = require("razorpay");
 
 //1
@@ -17,7 +18,9 @@ const home = async (req, res) => {
     const productwa = await Productdb.find({ category: "WATCH", isAvailable: true });
     const producthe = await Productdb.find({ category: "HEADPHONE", isAvailable: true });
     const productsp = await Productdb.find({ category: "SPEAKER", isAvailable: true });
+
     const products = await Productdb.find();
+
     let prowish = [];
     let procart = [];
 
@@ -32,11 +35,11 @@ const home = async (req, res) => {
         const wish = user.wishlist.item.map((val) => val.productId);
         prowish = await Productdb.find({ _id: { $in: wish } });
 
-        console.log(prowish + "prowish");
+        let Totalwish = user.wishlist.item.length;
+        let Totalcart = user.cart.item.length;
 
         const cart = user.cart.item.map((val) => val.productId);
         procart = await Productdb.find({ _id: { $in: cart } });
-        console.log(procart + " procart");
 
         res.render("home", {
             productwa,
@@ -49,13 +52,25 @@ const home = async (req, res) => {
             offersp,
             prowish,
             procart,
+            Totalcart,
+            Totalwish,
         });
     } else {
         let val = {
             v: 0,
         };
 
-        res.render("home", { productwa, producthe, productsp, products, test: val, offerhf, offersp, prowish, procart });
+        res.render("home", {
+            productwa,
+            producthe,
+            productsp,
+            products,
+            test: val,
+            offerhf,
+            offersp,
+            prowish,
+            procart,
+        });
     }
 };
 
@@ -69,24 +84,25 @@ const register = (req, res) => {
 
 //3
 const signin = async (req, res) => {
-    const data = {
-        email: req.body.email,
-        password: req.body.password,
-    };
-
     try {
+        const data = {
+            email: req.body.email,
+            password: req.body.password,
+        };
         const check = await Userdb.findOne({ email: req.body.email });
 
         if (check.email == data.email && check.password == data.password) {
             req.session.isAvailable = check._id;
             if (check.isVerified == true) {
-                res.redirect("/");
+                res.json({ loginNext: true });
             } else {
-                res.redirect("/login");
+                res.json({ loginNext: "block" });
             }
+        } else {
+            res.json({ loginNext: "block" });
         }
     } catch (error) {
-        console.log(error);
+        res.json({ loginNext: false });
     }
 };
 
@@ -110,35 +126,55 @@ const logout = (req, res, next) => {
 
 //6
 const product = async (req, res) => {
-    let val = {
-        v: 0,
-    };
-    const producttop = await Productdb.find();
-    axios
-        .get("http://localhost:3000/check/product")
-        .then((response) => {
-            console.log("end");
-            res.render("product", { producttop, products: response.data, test: val });
-        })
-        .catch((err) => {
-            res.send(err);
-        });
+    if (req.session.isAvailable) {
+        let val = {
+            v: 1,
+        };
+
+        let user = await Userdb.findById({ _id: req.session.isAvailable });
+        let Totalwish = user.wishlist.item.length;
+        let Totalcart = user.cart.item.length;
+
+        const producttop = await Productdb.find();
+
+        const data = await Productdb.find({ isAvailable: true });
+        res.render("product", { producttop, products: data, test: val, Totalwish, Totalcart });
+    } else {
+        let val = {
+            v: 0,
+        };
+
+        const producttop = await Productdb.find();
+
+        const data = await Productdb.find({ isAvailable: true });
+        res.render("product", { producttop, products: data, test: val });
+    }
 };
 
 //7
-const single_product = (req, res) => {
-    let val = {
-        v: 0,
-    };
-    axios
-        .get("http://localhost:3000/user/check/product", { params: { id: req.query.id } })
+const single_product = async (req, res) => {
+    if (req.session.isAvailable) {
+        let val = {
+            v: 1,
+        };
+        let id = req.query.id;
 
-        .then(function (userdata) {
-            res.render("single-product", { user: userdata.data, test: val });
-        })
-        .catch((err) => {
-            res.send(err);
-        });
+        const data = await Productdb.findById(id);
+        const productPic = data.image;
+        let user = await Userdb.findById({ _id: req.session.isAvailable });
+        let Totalwish = user.wishlist.item.length;
+        let Totalcart = user.cart.item.length;
+        res.render("single-product", { user: data, productPic, test: val, Totalwish, Totalcart });
+    } else {
+        let val = {
+            v: 0,
+        };
+        let id = req.query.id;
+
+        const data = await Productdb.findById(id);
+        const productPic = data.image;
+        res.render("single-product", { user: data, productPic, test: val });
+    }
 };
 
 //8
@@ -147,81 +183,80 @@ const wishlist = async (req, res) => {
         v: 1,
     };
 
-    if (req.session.isAvailable) {
-        let arr = [];
+    let arr = [];
 
-        let pro = [];
+    let pro = [];
 
-        let user = {};
+    let user = {};
 
-        const sess = req.session.isAvailable;
+    const sess = req.session.isAvailable;
 
-        user = await Userdb.findById({ _id: req.session.isAvailable });
-        const value = user.wishlist.item.map((val) => val.productId);
+    user = await Userdb.findById({ _id: req.session.isAvailable });
 
-        pro = await Productdb.find({ _id: { $in: value } });
+    const value = user.wishlist.item.map((val) => val.productId);
 
-        res.render("wishlist", { products: pro, test: val, sessval: sess, userdt: user });
-    } else {
-        res.redirect("/login");
-    }
+    pro = await Productdb.find({ _id: { $in: value } });
+
+    let Totalwish = user.wishlist.item.length;
+    let Totalcart = user.cart.item.length;
+
+    res.render("wishlist", { products: pro, test: val, sessval: sess, userdt: user, Totalcart, Totalwish });
 };
 
 //9
 const cart = async (req, res) => {
-    if (req.session.isAvailable) {
-        const sess = req.session.isAvailable;
+    const sess = req.session.isAvailable;
 
-        let val = {
-            v: 1,
-        };
+    let val = {
+        v: 1,
+    };
 
-        let arr = [];
+    let arr = [];
 
-        let pro = [];
+    let pro = [];
 
-        let user = {};
+    let user = {};
 
-        let flultotal = 0;
+    let flultotal = 0;
 
-        user = await Userdb.findByIdAndUpdate({ _id: req.session.isAvailable });
-        const value = user.cart.item.map((val) => val.productId);
+    user = await Userdb.findByIdAndUpdate({ _id: req.session.isAvailable });
+    const value = user.cart.item.map((val) => val.productId);
 
-        const fultot = user.cart.item.map((val) => {
-            const res = val.qty * val.price;
-            return res;
-        });
+    const fultot = user.cart.item.map((val) => {
+        const res = val.qty * val.price;
+        return res;
+    });
 
-        flultotal = fultot.reduce((tot, val) => {
-            return tot + val;
-        }, 0);
+    flultotal = fultot.reduce((tot, val) => {
+        return tot + val;
+    }, 0);
 
-        user.cart.totalPrice = flultotal;
-        user.save();
+    user.cart.totalPrice = flultotal;
+    user.save();
 
-        pro = await Productdb.find({ _id: { $in: value } });
+    pro = await Productdb.find({ _id: { $in: value } });
 
-        res.render("cart", { products: pro, test: val, sessval: sess, userdt: user, total: flultotal });
-    } else {
-        res.redirect("/login");
-    }
+    let Totalwish = user.wishlist.item.length;
+    let Totalcart = user.cart.item.length;
+
+    res.render("cart", { products: pro, test: val, sessval: sess, userdt: user, total: flultotal, Totalwish, Totalcart });
 };
 
 //10
 const dashboard = async (req, res) => {
-    if (req.session.isAvailable) {
-        let val = {
-            v: 1,
-        };
-        const id = req.session.isAvailable;
-        const user = await Adressdb.find({ userId: id });
-        const value = await Userdb.find({ _id: id });
-        const orders = await Ordersdb.find({ userId: id });
-        const product = await Productdb.find({});
-        res.render("dashboard", { products: user, details: value, test: val, orders, product });
-    } else {
-        res.redirect("/login");
-    }
+    let val = {
+        v: 1,
+    };
+    const id = req.session.isAvailable;
+    const user = await Adressdb.find({ userId: id });
+    let value = await Userdb.find({ _id: id });
+
+    const orders = await Ordersdb.find({ userId: id });
+    const product = await Productdb.find({});
+
+    let Totalwish = value[0].wishlist.item.length;
+    let Totalcart = value[0].cart.item.length;
+    res.render("dashboard", { products: user, details: value, test: val, orders, product, Totalwish, Totalcart });
 };
 
 //11
@@ -243,11 +278,11 @@ const newpassword = (req, res) => {
 
 //13
 const checknumber = async (req, res) => {
-    const data = {
-        mobile: req.body.mobile,
-    };
-
     try {
+        const data = {
+            mobile: req.body.mobile,
+        };
+
         const check = await Userdb.findOne({ mobile: req.body.mobile });
 
         if (check.mobile == data.mobile) {
@@ -269,7 +304,6 @@ const checknumber = async (req, res) => {
 
 //14
 const generate = (req, res, next) => {
-    // start ...............................................
     // Function to generate a random number between 1111 and 9999
     function generateRandomNumber() {
         const randomNum = Math.floor(Math.random() * (9999 - 1111 + 1) + 1111);
@@ -288,7 +322,6 @@ const generate = (req, res, next) => {
 
     // Call the function with the random number
     processRandomNumber(randomResult);
-    // end ...............................................
 
     req.session.myValue = randomResult;
     next();
@@ -322,74 +355,60 @@ const passwordchange = async (req, res) => {
 
 //18
 const addcartput = async (req, res) => {
-    if (req.session.isAvailable) {
-        const id = req.session.isAvailable;
+    const id = req.session.isAvailable;
 
-        const productId = req.body.id;
+    const productId = req.body.id;
 
-        const price = req.body.price;
-        let users = await Userdb.findById({ _id: req.session.isAvailable });
-        let alredycart = 0;
-        const cart = users.cart.item.find((val) => {
-            if (productId == val.productId) {
-                alredycart = 1;
-                return alredycart;
-            }
-        });
-
-        if (alredycart == 0) {
-            const singletotal = req.body.price;
-            const qty = 1;
-            const user = await Userdb.findByIdAndUpdate(id);
-            if (!user) {
-                throw new Error("User not found");
-            }
-            user.cart.item.push({ productId, qty, price, singletotal });
-            user.cart.totalPrice += price * qty;
-            await user.save();
+    const price = req.body.price;
+    let users = await Userdb.findById({ _id: req.session.isAvailable });
+    let alredycart = 0;
+    const cart = users.cart.item.find((val) => {
+        if (productId == val.productId) {
+            alredycart = 1;
+            return alredycart;
         }
-    } else {
-        res.render("login");
-    }
-};
+    });
 
-//enddddddd
-// const addcartend = async (req, res) => {
-//     console.log("adddddenddddd")
-//     res.send("haiii")
-// };
-
-//19
-const addwishlistput = async (req, res) => {
-    if (req.session.isAvailable) {
-        const id = req.session.isAvailable;
-        const productId = req.body.id;
-        const price = req.body.price;
-
+    if (alredycart == 0) {
+        const singletotal = req.body.price;
         const qty = 1;
-
-        //    const price = 2500
-        // const id = req.params.id;
-        // Userdb.findByIdAndUpdate(id, req.body, { useFindAndModify: false })
-
         const user = await Userdb.findByIdAndUpdate(id);
         if (!user) {
             throw new Error("User not found");
         }
-        let alredywishlist = 0;
-        const cart = user.wishlist.item.find((val) => {
-            if (productId == val.productId) {
-                alredywishlist = 1;
-                return alredywishlist;
-            }
-        });
+        user.cart.item.push({ productId, qty, price, singletotal });
+        user.cart.totalPrice += price * qty;
+        await user.save();
 
-        if (alredywishlist == 0) {
-            user.wishlist.item.push({ productId, price });
-            await user.save();
-        }
+        res.json({ alredycart: 0 });
     } else {
-        res.render("login");
+        res.json({ alredycart: 1 });
+    }
+};
+
+const addwishlistput = async (req, res) => {
+    const id = req.session.isAvailable;
+    const productId = req.body.id;
+    const price = req.body.price;
+    const user = await Userdb.findByIdAndUpdate(id);
+    if (!user) {
+        throw new Error("User not found");
+    }
+    let alredywishlist = 0;
+    const cart = user.wishlist.item.find((val) => {
+        if (productId == val.productId) {
+            alredywishlist = 1;
+            return alredywishlist;
+        }
+    });
+
+    if (alredywishlist == 0) {
+        user.wishlist.item.push({ productId, price });
+        await user.save();
+
+        res.json({ alredycart: 0 });
+    } else {
+        res.json({ alredycart: 1 });
     }
 };
 
@@ -402,111 +421,75 @@ const dashboardpost = (req, res) => {
         res.status(400).send({ message: "contant can not be empty!" });
         return;
     }
-    console.log(req.session.isAvailable + "isAvailable....");
-    if (req.session.isAvailable) {
-        //new Adress
-        const user = new Adressdb({
-            userId: req.session.isAvailable,
-            fullname: req.body.name,
-            phone1: req.body.number,
-            pincode: req.body.pincode,
-            state: req.body.state,
-            city: req.body.city,
-            houseNo: req.body.house,
-            roadName: req.body.road,
-        });
 
-        //save user in the database
-        user.save(user)
-            .then((data) => {
-                res.redirect("/dashboard");
-            })
-            .catch((err) => {
-                res.status(500).send({
-                    message: err.message || "some error",
-                });
+    //new Adress
+    const user = new Adressdb({
+        userId: req.session.isAvailable,
+        fullname: req.body.name,
+        phone1: req.body.number,
+        pincode: req.body.pincode,
+        state: req.body.state,
+        city: req.body.city,
+        houseNo: req.body.house,
+        roadName: req.body.road,
+    });
+
+    //save user in the database
+    user.save(user)
+        .then((data) => {
+            res.redirect("/dashboard");
+        })
+        .catch((err) => {
+            res.status(500).send({
+                message: err.message || "some error",
             });
-    } else {
-        res.render("login");
-    }
+        });
 };
 
 //15
 const checkout = async (req, res) => {
-    if (req.session.isAvailable) {
-        const sess = req.session.isAvailable;
-        let val = {
-            v: 1,
-        };
-        let user = {};
+    const sess = req.session.isAvailable;
+    let val = {
+        v: 1,
+    };
+    let user = {};
 
-        // let arr = [];
+    let pro = [];
+    let coupon = [];
 
-        let pro = [];
-        let coupon = [];
+    let userad = {};
 
-        let userad = {};
+    let flultotal = 0;
 
-        let flultotal = 0;
+    user = await Userdb.findById({ _id: req.session.isAvailable });
 
-        user = await Userdb.findById({ _id: req.session.isAvailable });
-        console.log(user);
-        const value = user.cart.item.map((val) => val.productId);
-        console.log(value);
+    const value = user.cart.item.map((val) => val.productId);
 
-        const fultot = user.cart.item.map(async (valus) => {
-            const res = valus.qty * valus.price;
-            // 88888888888888888888888888888888888888888888888888888888888888888888
+    const fultot = user.cart.item.map(async (valus) => {
+        const res = valus.qty * valus.price;
+        return res;
+    });
 
-            //    let offer = await Offer.find({});
-            //    offer.map((valof)=>{
-            //      if(valus.name == valof.categoryname){
-            //         if(valof.avilable){
-            //         }
-            //      }
-            //    })
+    pro = await Productdb.find({ _id: { $in: value } });
 
-            return res;
-        });
-        // **********************************************
-        // flultotal = fultot.reduce((tot, val) => {
-        //     return tot + val;
-        // }, 0);
+    const id = req.session.isAvailable;
+    userad = await Adressdb.find({ userId: id });
+    coupon = await Coupon.find({ usedBy: { $nin: [sess] } });
 
-        // user.cart.totalPrice = flultotal
-        // await user.save(user.cart.totalPrice)
-        // **********************************************
+    let Totalwish = user.wishlist.item.length;
+    let Totalcart = user.cart.item.length;
 
-        pro = await Productdb.find({ _id: { $in: value } });
-
-        const id = req.session.isAvailable;
-        userad = await Adressdb.find({ userId: id });
-
-        // user = await Userdb.findById({ _id: req.session.isAvailable });
-
-        // const value = await Userdb.find({ _id: id });
-
-        // res.render("dashboard", { products: user, details: value, test: val });
-
-        // res.render("cart", { products: pro, test: val, sessval: sess, userdt: user, total: flultotal });
-
-        // coupon = await Coupon.find({});
-        coupon = await Coupon.find({ usedBy: { $nin: [sess] } });
-
-        //   console.log(coupon)
-
-        res.render("checkout", {
-            test: val,
-            productad: userad,
-            products: pro,
-            sessval: sess,
-            userdt: user,
-            total: flultotal,
-            coupon,
-        });
-    } else {
-        res.redirect("/login");
-    }
+    res.render("checkout", {
+        test: val,
+        productad: userad,
+        products: pro,
+        sessval: sess,
+        userdt: user,
+        total: flultotal,
+        coupon,
+        Totalwish,
+        Totalcart,
+    });
 };
 
 const cartupdat = async (req, res) => {
@@ -625,62 +608,88 @@ const wishlistremove = async (req, res) => {
 };
 
 const oddersuccess = async (req, res) => {
-    if (req.session.isAvailable) {
-        const sess = req.session.isAvailable;
-        let val = {
-            v: 1,
-        };
+    const sess = req.session.isAvailable;
+    const addressid = req.session.addressid 
+    let val = {
+        v: 1,
+    };
 
-        let user = {};
+    let user = {};
 
-        // let arr = [];
+    let pro = [];
 
-        let pro = [];
+    let userad = {};
 
-        let userad = {};
+    let flultotal = 0;
 
-        let flultotal = 0;
+    user = await Userdb.findById({ _id: req.session.isAvailable });
+    const value = user.cart.item.map((val) => val.productId);
 
-        user = await Userdb.findById({ _id: req.session.isAvailable });
-        const value = user.cart.item.map((val) => val.productId);
+    const fultot = user.cart.item.map((val) => {
+        const res = val.qty * val.price;
+        return res;
+    });
 
-        const fultot = user.cart.item.map((val) => {
-            const res = val.qty * val.price;
-            return res;
-        });
+    flultotal = fultot.reduce((tot, val) => {
+        return tot + val;
+    }, 0);
 
-        flultotal = fultot.reduce((tot, val) => {
-            return tot + val;
-        }, 0);
+    pro = await Productdb.find({ _id: { $in: value } });
 
-        pro = await Productdb.find({ _id: { $in: value } });
+    const id = req.session.isAvailable;
+    userad = await Adressdb.find({ _id: addressid });
 
-        const id = req.session.isAvailable;
-        userad = await Adressdb.find({ userId: id });
+    user = await Userdb.findById({ _id: req.session.isAvailable });
+    let Totalwish = user.wishlist.item.length;
+    let Totalcart = user.cart.item.length;
 
-        user = await Userdb.findById({ _id: req.session.isAvailable });
+    res.render("oddersuccess", {
+        test: val,
+        productad: userad,
+        products: pro,
+        sessval: sess,
+        userdt: user,
+        total: flultotal,
+        Totalwish,
+        Totalcart
+    });
+}; 
 
-        res.render("oddersuccess", {
-            test: val,
-            productad: userad,
-            products: pro,
-            sessval: sess,
-            userdt: user,
-            total: flultotal,
-        });
-    } else {
-        res.redirect("/login");
-    }
+const odder_success_Check = async (req, res) => {
+    let odderPost = true;
+
+    const user = await Userdb.findById({ _id: req.session.isAvailable });
+
+    let userCartLength = user.cart.item.length - 1;
+    console.log(userCartLength, "userCartLength");
+
+    const value = user.cart.item.map(async (val, i) => {
+        let prid = val.productId;
+
+        const product = await Productdb.findById({ _id: prid });
+
+        let prs = product.stock;
+
+        let pri = val.qty;
+
+        if (prs - pri <= 0) {
+            odderPost = false;
+            res.json({ odderNext: odderPost });
+        }
+        if (userCartLength == i && odderPost !== false) {
+            res.json({ odderNext: odderPost });
+        }
+    });
 };
 
 const oddersuccesspost = async (req, res) => {
     const addressid = req.body.addresid;
     const paymentmethode = req.body.payment;
-
+    req.session.addressid = addressid;
+    let total;
     console.log(addressid);
     console.log(paymentmethode);
-
-    if (paymentmethode == "Cash on delivery") {
+    if (1 == 1) {
         const userid = req.session.isAvailable;
         const user = await Userdb.findById({ _id: req.session.isAvailable });
         const value = user.cart.item.map(async (val, i) => {
@@ -692,13 +701,34 @@ const oddersuccesspost = async (req, res) => {
 
             let pri = val.qty;
 
-            if (prs - pri <= 0) {
-                
-                console.log("less.....................................");
-            }
-
             product.stock = prs - pri;
             product.save();
+        });
+        // Salesdb
+        user.cart.item.map(async (val, i) => {
+            let prid = val.productId;
+
+            const product = await Productdb.findById({ _id: prid });
+
+            let prs = product.stock;
+
+            let pri = val.qty;
+
+            const Sales = new Salesdb({
+                productNames: product.name,
+                category: product.category,
+                quantity: val.qty,
+                amount: val.singletotal,
+            });
+
+            //save Orders in the database
+            Sales.save(user)
+                .then((data) => {})
+                .catch((err) => {
+                    res.status(500).send({
+                        message: err.message || "some error",
+                    });
+                });
         });
 
         const Adress = await Adressdb.findById({ _id: addressid });
@@ -713,7 +743,6 @@ const oddersuccesspost = async (req, res) => {
             city: Adress.city,
             houseNo: Adress.houseNo,
             roadName: Adress.roadName,
-            // createdAt: true,
             status: "pending",
             productReturned: 0,
         });
@@ -735,7 +764,7 @@ const oddersuccesspost = async (req, res) => {
             Orders.products.item.push({ productId, qty, price });
         });
 
-        let total = Orders.products.item.reduce((tot, val) => {
+        total = Orders.products.item.reduce((tot, val) => {
             return tot + val.price * val.qty;
         }, 0);
 
@@ -749,48 +778,34 @@ const oddersuccesspost = async (req, res) => {
         dash.save();
     }
 
-    //  **********************************************************
+    if (paymentmethode == "Cash on delivery") {
+        console.log("cash on delivery...........................");
+        res.json({ payment: "Cash on delivery" });
+    } else {
+        console.log("razor pay ..........................");
+        const razorpay = new Razorpay({
+            key_id: "rzp_test_zVBhrL4CVfIezv",
+            key_secret: "HeU66JXIWNBWFHC1vnC6qB7X",
+        });
+        let toralPrice = total * 100;
+        // let toralPrice = toralPr.toString();
 
-    // if(paymentmethode=="Razorpay"){
-    //     const instance = new Razorpay({
-    //         // key_id: key_id,
-    //         key_id:"rzp_test_zVBhrL4CVfIezv",
-    //         key_secret: "HeU66JXIWNBWFHC1vnC6qB7X"
-    //     });
-    //     let order = await instance.orders.create({
-    //         amount: 500 * 100,
-    //         currency: "INR",
-    //         receipt: 'new id u want to impliment',
-    //     })
-    //     console.log("########## ")
-    //     console.log("order >> ",order)
-    //     res.json({data:order});
-    // }
+        const amount = toralPrice; // Amount in paise (100 paise = 1 INR)
+        const currency = "INR";
+        console.log(amount, "amount=======");
 
-    //**********************************************************
+        const order = await razorpay.orders.create({
+            amount: amount,
+            currency: currency,
+            receipt: "order_12345", // Generate a unique order ID on your server
+        });
 
-    const razorpay = new Razorpay({
-        key_id: "rzp_test_zVBhrL4CVfIezv",
-        key_secret: "HeU66JXIWNBWFHC1vnC6qB7X",
-    });
-
-    const amount = 50000; // Amount in paise (100 paise = 1 INR)
-    const currency = "INR";
-
-    const order = await razorpay.orders.create({
-        amount: amount,
-        currency: currency,
-        receipt: "order_12345", // Generate a unique order ID on your server
-    });
-
-    res.json({ order });
+        res.json({ order });
+    }
 };
-
-const oddersuccesspostend = (req, res) => {};
 
 const checkphoneup = async (req, res) => {
     let number = req.body.number;
-    console.log(number);
 
     user = await Userdb.find({ mobile: number })
 
@@ -833,8 +848,11 @@ const orderStatus = async (req, res) => {
     }
 
     const product = await Productdb.find({});
+    let user = await Userdb.findById({ _id: req.session.isAvailable });
+    let Totalwish = user.wishlist.item.length;
+    let Totalcart = user.cart.item.length;
 
-    res.render("orderStatus", { test: val, orders, product, ret, cancel });
+    res.render("orderStatus", { test: val, orders, product, ret, cancel ,Totalwish ,Totalcart });
 };
 
 //**************************** post api ****************************
@@ -848,11 +866,6 @@ const create = async (req, res) => {
         res.status(400).send({ message: "contant can not be empty!" });
         return;
     }
-    console.log(req.body.name)
-    console.log(req.body.email)
-    console.log(req.body.mobile)
-    console.log(req.body.password)
- 
 
     const dash = await Dashdb.findOneAndUpdate({});
     dash.user += 1;
@@ -870,7 +883,7 @@ const create = async (req, res) => {
     //save user in the database
     user.save(user)
         .then((data) => {
-            res.json(data)
+            res.json(data);
             // res.redirect("/login");
         })
         .catch((err) => {
@@ -882,6 +895,7 @@ const create = async (req, res) => {
 
 //2.
 //product find
+// copy.........
 const productfind = (req, res) => {
     if (req.query.id) {
         const id = req.query.id;
@@ -924,75 +938,280 @@ const productsearch = (req, res) => {
         });
 };
 
-//4.
+//4.category
 const sortfind = (req, res) => {
     const value = req.body.va;
-    Productdb.find({})
-        .sort({ price: value })
-        .then((data) => {
-            if (!data) {
-                res.status(404).send({ message: "Not found user with id" });
-            } else {
-                res.json(data);
-            }
-        })
-        .catch((err) => {
-            res.status(500).send({ message: "Error retriving user with id" });
-        });
+    const checkbox = req.body.checkbox;
+    let { innerValue } = req.body;
+    if (checkbox.length == 0) {
+        Productdb.find()
+            .sort({ price: value })
+            .then((data) => {
+                if (!data) {
+                    res.status(404).send({ message: "Not found user with id" });
+                } else {
+                    // let datalength = data.length;
+                    // let lengthRes = Math.ceil(datalength/4);
+                    // let nextpage = ++innerValue;
+                    // let lenghtStart = (innerValue*4)-4;
+                    // let lenghtEnd = lenghtStart + 4;
+                    let nextpage = 1;
+                    let lenghtStart = 0;
+                    let lenghtEnd = 4;
+
+                    let result = data.filter((val, index) => index >= lenghtStart && index < lenghtEnd);
+                    result.push(nextpage);
+                    res.json(result);
+                }
+            })
+            .catch((err) => {
+                res.status(500).send({ message: "Error retriving user with id" });
+            });
+    } else {
+        console.log(value, checkbox, "checkbox+++++");
+        Productdb.find({ category: { $in: checkbox } })
+            .sort({ price: value })
+            .then((data) => {
+                if (!data) {
+                    res.status(404).send({ message: "Not found user with id" });
+                } else {
+                    // console.log(data,"data========")
+                    // res.json(data);
+                    // let datalength = data.length;
+                    // let lengthRes = Math.ceil(datalength/4);
+                    // let nextpage = ++innerValue;
+                    // let lenghtStart = (innerValue*4)-4;
+                    // let lenghtEnd = lenghtStart + 4;
+                    let nextpage = 1;
+                    let lenghtStart = 0;
+                    let lenghtEnd = 4;
+                    let result = data.filter((val, index) => index >= lenghtStart && index < lenghtEnd);
+                    result.push(nextpage);
+                    res.json(result);
+                }
+            })
+            .catch((err) => {
+                res.status(500).send({ message: "Error retriving user with id" });
+            });
+    }
 };
 
 //5.
-const filterfind = (req, res) => {
+const filterfind = async (req, res) => {
+    console.log("filterfind===");
     const value = req.body;
-    axios
-        .get("http://localhost:3000/user/filter/product", { params: { value } })
+    console.log(value, "filterfind===");
+    // Productdb.find({ category: { $in: value } })
+    if (value.length == 0) {
+        const data = await Productdb.find();
+        let nextpage = 1;
+        let lenghtStart = 0;
+        let lenghtEnd = 4;
 
-        .then((response) => {
-            res.json(response.data);
-        })
-        .catch((err) => {
-            res.send(err);
-        });
+        let result = data.filter((val, index) => index >= lenghtStart && index < lenghtEnd);
+        result.push(nextpage);
+        res.json(result);
+    } else {
+        const data = await Productdb.find({ category: { $in: value } });
+        let nextpage = 1;
+        let lenghtStart = 0;
+        let lenghtEnd = 4;
+
+        let result = data.filter((val, index) => index >= lenghtStart && index < lenghtEnd);
+        result.push(nextpage);
+        res.json(result);
+    }
+
+
 };
 
 //6
 const poductpagin = async (req, res) => {
     const values = req.body.svalue;
     const valuel = req.body.lvalue;
+    let { sortValue, checkbox, innerValue } = req.body;
+    console.log(sortValue, checkbox, innerValue);
 
-    await Productdb.find({})
-        .skip(values)
-        .limit(valuel)
+    if (sortValue == null && checkbox.length == 0) {
+        console.log("sortValue , checkbox,innerValue");
+        Productdb.find()
+            .then((data) => {
+                if (!data) {
+                    res.status(404).send({ message: "Not found user with id" });
+                } else {
+                    let datalength = data.length;
+                    let lengthRes = Math.ceil(datalength / 4);
 
-        .then((data) => {
-            if (!data) {
-                res.status(404).send({ message: "Not found user with id" });
-            } else {
-                res.json(data);
-            }
-        })
-        .catch((err) => {
-            res.status(500).send({ message: "Error retriving user with id" });
-        });
+                    let nextpage = innerValue;
+                    let lenghtStart;
+                    let lenghtEnd;
+                    if (valuel == -1) {
+                        if (innerValue > 1) {
+                            nextpage = --innerValue;
+                        }
+                        lenghtStart = innerValue * 4 - 4;
+                        lenghtEnd = lenghtStart + 4;
+                        console.log(lenghtStart, lenghtEnd);
+                    } else {
+                        if (innerValue < lengthRes) {
+                            nextpage = ++innerValue;
+                        }
+                        lenghtStart = innerValue * 4 - 4;
+                        lenghtEnd = lenghtStart + 4;
+                        console.log(lenghtStart, lenghtEnd);
+                    }
+                    let result = data.filter((val, index) => index >= lenghtStart && index < lenghtEnd);
+                    result.push(nextpage);
+                    res.json(result);
+                }
+            })
+            .catch((err) => {
+                res.status(500).send({ message: "Error retriving user with id" });
+            });
+    } else if (sortValue !== null && checkbox.length == 0) {
+        Productdb.find()
+            .sort({ price: sortValue })
+            .then((data) => {
+                if (!data) {
+                    res.status(404).send({ message: "Not found user with id" });
+                } else {
+                    let datalength = data.length;
+                    let lengthRes = Math.ceil(datalength / 4);
+
+                    let nextpage = innerValue;
+                    let lenghtStart;
+                    let lenghtEnd;
+                    if (valuel == -1) {
+                        if (innerValue > 1) {
+                            nextpage = --innerValue;
+                        }
+                        lenghtStart = innerValue * 4 - 4;
+                        lenghtEnd = lenghtStart + 4;
+                        console.log(lenghtStart, lenghtEnd);
+                    } else {
+                        if (innerValue < lengthRes) {
+                            nextpage = ++innerValue;
+                        }
+                        lenghtStart = innerValue * 4 - 4;
+                        lenghtEnd = lenghtStart + 4;
+                        console.log(lenghtStart, lenghtEnd);
+                    }
+                    let result = data.filter((val, index) => index >= lenghtStart && index < lenghtEnd);
+                    result.push(nextpage);
+                    res.json(result);
+                }
+            })
+            .catch((err) => {
+                res.status(500).send({ message: "Error retriving user with id" });
+            });
+    } else if (sortValue == null && checkbox.length > 0) {
+        Productdb.find({ category: { $in: checkbox } })
+            .then((data) => {
+                if (!data) {
+                    res.status(404).send({ message: "Not found user with id" });
+                } else {
+                    let datalength = data.length;
+                    let lengthRes = Math.ceil(datalength / 4);
+
+                    let nextpage = innerValue;
+                    let lenghtStart;
+                    let lenghtEnd;
+                    if (valuel == -1) {
+                        if (innerValue > 1) {
+                            nextpage = --innerValue;
+                        }
+                        lenghtStart = innerValue * 4 - 4;
+                        lenghtEnd = lenghtStart + 4;
+                        console.log(lenghtStart, lenghtEnd);
+                    } else {
+                        if (innerValue < lengthRes) {
+                            nextpage = ++innerValue;
+                        }
+                        lenghtStart = innerValue * 4 - 4;
+                        lenghtEnd = lenghtStart + 4;
+                        console.log(lenghtStart, lenghtEnd);
+                    }
+                    let result = data.filter((val, index) => index >= lenghtStart && index < lenghtEnd);
+                    result.push(nextpage);
+                    res.json(result);
+                }
+            })
+            .catch((err) => {
+                res.status(500).send({ message: "Error retriving user with id" });
+            });
+    } else if (sortValue !== null && checkbox.length > 0) {
+        Productdb.find({ category: { $in: checkbox } })
+            .sort({ price: sortValue })
+            .then((data) => {
+                if (!data) {
+                    res.status(404).send({ message: "Not found user with id" });
+                } else {
+                    let datalength = data.length;
+                    let lengthRes = Math.ceil(datalength / 4);
+
+                    let nextpage = innerValue;
+                    let lenghtStart;
+                    let lenghtEnd;
+                    if (valuel == -1) {
+                        if (innerValue > 1) {
+                            nextpage = --innerValue;
+                        }
+                        lenghtStart = innerValue * 4 - 4;
+                        lenghtEnd = lenghtStart + 4;
+                        console.log(lenghtStart, lenghtEnd);
+                    } else {
+                        if (innerValue < lengthRes) {
+                            nextpage = ++innerValue;
+                        }
+                        lenghtStart = innerValue * 4 - 4;
+                        lenghtEnd = lenghtStart + 4;
+                        console.log(lenghtStart, lenghtEnd);
+                    }
+                    let result = data.filter((val, index) => index >= lenghtStart && index < lenghtEnd);
+                    result.push(nextpage);
+                    res.json(result);
+                }
+            })
+            .catch((err) => {
+                res.status(500).send({ message: "Error retriving user with id" });
+            });
+    } else {
+        await Productdb.find({})
+            .skip(values)
+            .limit(valuel)
+
+            .then((data) => {
+                if (!data) {
+                    res.status(404).send({ message: "Not found user with id" });
+                } else {
+                    res.json(data);
+                }
+            })
+            .catch((err) => {
+                res.status(500).send({ message: "Error retriving user with id" });
+            });
+    }
 };
 
 //************************ end ********* end ***********************
 
 //1.
 const filterfindcategory = (req, res) => {
-    console.log("filterfindcategory" + req.query.value);
-    axios
-        .get("http://localhost:3000/user/check/product")
-        .then((response) => {
-            console.log(response.data);
-            res.render("cart");
-        })
-        .catch((err) => {
-            res.send(err);
-        });
+    res.render("cart");
+
+    // axios
+    //     .get("http://localhost:3000/user/check/product")
+    //     .then((response) => {
+    //         console.log(response.data);
+    //         res.render("cart");
+    //     })
+    //     .catch((err) => {
+    //         res.send(err);
+    //     });
 };
 
 //2.
+// copy copy
 const productfilter = (req, res) => {
     const value = req.query.value;
     Productdb.find({ category: { $in: value } })
@@ -1026,72 +1245,64 @@ const sortfilter = (req, res) => {
 };
 
 const couponCodeCheck = async (req, res) => {
-    if (req.session.isAvailable) {
-        let couponcode = req.body.coupon;
+    let couponcode = req.body.coupon;
 
-        const couponck = await Coupon.findOne({ code: couponcode });
-        if (couponck.count <= 1) {
-            return;
-        }
-        let percent = couponck.percent;
-        let maxoff = couponck.maxoff;
-
-        const sess = req.session.isAvailable;
-        let val = {
-            v: 1,
-        };
-        let user = {};
-
-        // let arr = [];
-
-        let pro = [];
-        let coupon = [];
-
-        let userad = {};
-
-        let flultotal = 0;
-
-        user = await Userdb.findByIdAndUpdate({ _id: req.session.isAvailable });
-
-        const value = user.cart.item.map((val) => val.productId);
-
-        const fultot = user.cart.item.map((val) => {
-            const res = val.qty * val.price;
-            return res;
-        });
-
-        flultotal = fultot.reduce((tot, val) => {
-            return tot + val;
-        }, 0);
-
-        if (flultotal) {
-            let prc = (percent * flultotal) / 100;
-            if (maxoff > prc) {
-                flultotal = flultotal - maxoff;
-                // console.log(flultotal + "ans1");
-            } else {
-                flultotal = flultotal - prc;
-                // await user.save()
-            }
-
-            user.cart.totalPrice = flultotal;
-            user.save();
-        }
-
-        // await user.save()
-
-        pro = await Productdb.find({ _id: { $in: value } });
-
-        const id = req.session.isAvailable;
-        userad = await Adressdb.find({ userId: id });
-
-        // coupon = await Coupon.find({});
-        couponck.usedBy.push(sess);
-        couponck.count -= 1;
-        await couponck.save();
-    } else {
-        res.redirect("/login");
+    const couponck = await Coupon.findOne({ code: couponcode });
+    if (couponck.count <= 1) {
+        return;
     }
+    let percent = couponck.percent;
+    let maxoff = couponck.maxoff;
+
+    const sess = req.session.isAvailable;
+    let val = {
+        v: 1,
+    };
+    let user = {};
+
+    // let arr = [];
+
+    let pro = [];
+    let coupon = [];
+
+    let userad = {};
+
+    let flultotal = 0;
+
+    user = await Userdb.findByIdAndUpdate({ _id: req.session.isAvailable });
+
+    const value = user.cart.item.map((val) => val.productId);
+
+    const fultot = user.cart.item.map((val) => {
+        const res = val.qty * val.price;
+        return res;
+    });
+
+    flultotal = fultot.reduce((tot, val) => {
+        return tot + val;
+    }, 0);
+
+    if (flultotal) {
+        let prc = (percent * flultotal) / 100;
+        if (maxoff > prc) {
+            flultotal = flultotal - maxoff;
+        } else {
+            flultotal = flultotal - prc;
+        }
+
+        user.cart.totalPrice = flultotal;
+        user.save();
+    }
+
+    pro = await Productdb.find({ _id: { $in: value } });
+
+    const id = req.session.isAvailable;
+    userad = await Adressdb.find({ userId: id });
+
+    // coupon = await Coupon.find({});
+    couponck.usedBy.push(sess);
+    couponck.count -= 1;
+    await couponck.save();
 };
 
 const return_reason = async (req, res) => {
@@ -1121,17 +1332,20 @@ const addressChange = async (req, res) => {
     };
     console.log(req.query.id);
     const adress = await Adressdb.findById({ _id: req.query.id });
-    console.log(adress);
-
-    res.render("addressChange", { test: val, adress });
+    let user = await Userdb.findById({ _id: req.session.isAvailable });
+    let Totalwish = user.wishlist.item.length;
+    let Totalcart = user.cart.item.length;
+    // console.log(adress);
+    res.render("addressChange", { test: val, adress, Totalwish, Totalcart });
 };
 
 const adress_update = async (req, res) => {
-    if (!req.body) {
-        return res.status(400).send({ message: "data to update can not be empty!" });
-    }
-    const id = req.params.id;
     try {
+        const id = req.params.id;
+        if (!req.body) {
+            return res.status(400).send({ message: "data to update can not be empty!" });
+        }
+
         const datares = await Adressdb.findByIdAndUpdate(id, req.body, { new: true });
         if (!datares) {
             res.status(404).send({ message: "user not found" });
@@ -1146,7 +1360,6 @@ const adress_update = async (req, res) => {
 };
 
 const odder_cancel = async (req, res) => {
-    console.log("start..............................");
     console.log(req.body.id);
     let Orders = await Ordersdb.findByIdAndUpdate({ _id: req.body.id });
     Orders.status = "cancel";
@@ -1155,6 +1368,8 @@ const odder_cancel = async (req, res) => {
     console.log(Orders);
     res.json(Orders);
 };
+
+
 
 module.exports = {
     home,
@@ -1165,9 +1380,7 @@ module.exports = {
     single_product,
     wishlist,
     create,
-    // isLogin,
     logout,
-    // addAddress,
     signin,
     register,
     forgotnumber,
@@ -1184,7 +1397,6 @@ module.exports = {
     sortfilter,
     productsearch,
     dashboard,
-    // addcart,
     addcartput,
     addwishlistput,
     dashboardpost,
@@ -1197,10 +1409,13 @@ module.exports = {
     oddersuccesspost,
     checkphoneup,
     orderStatus,
-    oddersuccesspostend,
     couponCodeCheck,
     return_reason,
     addressChange,
     adress_update,
     odder_cancel,
+    odder_success_Check,
+    // sortfind_new,
+    // filterfind_new,
+    // poductpagin_new,
 };
