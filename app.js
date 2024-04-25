@@ -38,9 +38,10 @@ app.use(express.urlencoded({ extended: true }));
 
 // css,image path setting
 userRouter.use("/", express.static("public"));
-app.use("/admin", express.static("adminpublic"));
-app.use("/admin", express.static("uploads"));
-app.use("/", express.static("uploads"));
+userRouter.use("/", express.static("uploads"));
+adminRouter.use("/admin", express.static("adminpublic"));
+adminRouter.use("/admin", express.static("uploads"));
+
 
 // router setup
 app.use("/", userRouter);
