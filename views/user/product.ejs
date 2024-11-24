@@ -41,20 +41,20 @@
                                         <figure class="product-media">
                                             <span class="product-label label-new">New</span>
                                             
-                                            <a href="/single-product?id=<%= products[i]._id%>">
-                                                <% if(products[i].image) { %>
-                                                <img src="<%= products[i].image[0] %>" alt="img" class="product-image" />
+                                            <a href="/single-product?id=<%= products[i]?._id%>">
+                                                <% if(products[i]?.image) { %>
+                                                <img src="<%= products[i]?.image[0] %>" alt="img" class="product-image" />
                                                 <% }else{ %> Image Not Found <% } %>
                                             </a>
 
                                             <div class="product-action-vertical">
                                                 <form onsubmit="return false">
-                                                    <button class="btn-product-icon btn-wishlist btn-expandable" onclick="addtowishlist('<%= products[i]._id %>','<%= products[i].price %>')" type="submit"><span>add to wishlist</span></button>
+                                                    <button class="btn-product-icon btn-wishlist btn-expandable" onclick="addtowishlist('<%= products[i]?._id %>','<%= products[i]?.price %>')" type="submit"><span>add to wishlist</span></button>
                                                 </form>                                            </div><!-- End .product-action-vertical -->
 
                                             <div class="product-action">
                                                 <form onsubmit="return false">
-                                                    <button class="btn-product btn-cart" title="Add to cart" onclick="addtocart('<%= products[i]._id %>','<%= products[i].price %>')" type="submit"><span>add to cart</span></button>
+                                                    <button class="btn-product btn-cart" title="Add to cart" onclick="addtocart('<%= products[i]?._id %>','<%= products[i]?.price %>')" type="submit"><span>add to cart</span></button>
                                                 </form>
                                             </div><!-- End .product-action -->
                                         </figure><!-- End .product-media -->
@@ -63,9 +63,9 @@
                                             <div class="product-cat">
                                                 <!-- <a href="#">Appliances</a> -->
                                             </div><!-- End .product-cat -->
-                                            <h3 class="product-title"><a href="product.html"><%= products[i].name %></a></h3><!-- End .product-title -->
+                                            <h3 class="product-title"><a href="product.html"><%= products[i]?.name %></a></h3><!-- End .product-title -->
                                             <div class="product-price">
-                                                $<%= products[i].price %>
+                                                $<%= products[i]?.price %>
                                             </div><!-- End .product-price -->
                                             <div class="ratings-container">
                                                 <div class="ratings">

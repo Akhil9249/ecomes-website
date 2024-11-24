@@ -44,19 +44,16 @@
     <ul class="notifications" ></ul>
     <div class="page-wrapper">
         <header class="header header-10 header-intro-clearance">
-            
-
             <div class="header-middle">
                 <div class="container">
                     <div class="header-left">
                         <button class="mobile-menu-toggler">
                             <span class="sr-only">Toggle mobile menu</span>
                             <i class="icon-bars"></i>
-                        </button>
-                        
-                        <a href="index.html" class="logo">
+                        </button>                       
+                        <!-- <a href="index.html" class="logo">
                             <img src="logo/smart.jpg" alt="Molla Logo" width="105" height="25">
-                        </a>
+                        </a> -->
                     </div><!-- End .header-left -->
 
                     <div class="header-center">
@@ -76,18 +73,15 @@
                     </div>
 
                     <div class="header-right">
-                        <div class="header-dropdown-link">
-                            
+                        <div class="header-dropdown-link">   
                             <a href="/wishlist" class="wishlist-link">
                                 <i class="icon-heart-o"></i>
-                                <!-- <span class="wishlist-count">2</span> -->
-                                
+                                <!-- <span class="wishlist-count">2</span> -->       
                                 <% if(test.v==1) { %>
                                     <span class="wishlist-count"><%= Totalwish %></span>
                                     <% } %>
                                 <span class="wishlist-txt">Wishlist</span>
                             </a>
-
                             <div class="dropdown cart-dropdown">
                                 <a href="/cart" class="dropdown-toggle" role="button" aria-haspopup="true" aria-expanded="false" data-display="static">
                                     <i class="icon-shopping-cart"></i>
@@ -96,9 +90,7 @@
                                         <span class="cart-count"><%= Totalcart %></span>
                                         <% } %>
                                     <span class="cart-txt">Cart</span>
-                                </a>
-
-                                
+                                </a>   
                             </div><!-- End .cart-dropdown -->
                         </div>
                     </div><!-- End .header-right -->
@@ -114,13 +106,11 @@
                         <nav class="main-nav">
                             <ul class="menu sf-arrows">
                                 <li class="megamenu-container active">
-                                    <a href="/" class="sf-with">Home</a>
-
-                                    
+                                    <a href="/" class="sf-with">Home</a>    
                                 </li>
+                                
                                 <!-- <li>
                                     <a href="" class="sf-with-ul">Category</a>
-
                                     <div class="megamenu megamenu-md">
                                     <div class="row no-gutters">
                                         <div class="col-md-8">
@@ -146,6 +136,7 @@
                                     </div>
                                 </div>
                                 </li> -->
+
                                 <li>
                                     <a href="/product" class="sf-with">Product</a>   
                                 </li>  

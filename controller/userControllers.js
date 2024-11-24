@@ -12,7 +12,8 @@ const Razorpay = require("razorpay");
 //1
 
 const home = async (req, res) => {
-    const offerhf = await Offer.findOne({ name: "HEADPHONE" });
+    try {
+        const offerhf = await Offer.findOne({ name: "HEADPHONE" });
     const offersp = await Offer.findOne({ name: "SPEAKER" });
 
     const productwa = await Productdb.find({ category: "WATCH", isAvailable: true });
@@ -20,6 +21,7 @@ const home = async (req, res) => {
     const productsp = await Productdb.find({ category: "SPEAKER", isAvailable: true });
 
     const products = await Productdb.find();
+    console.log(products,"====products");
 
     let prowish = [];
     let procart = [];
@@ -71,6 +73,10 @@ const home = async (req, res) => {
             prowish,
             procart,
         });
+    }
+    } catch (error) {
+        console.log(error);
+        
     }
 };
 
