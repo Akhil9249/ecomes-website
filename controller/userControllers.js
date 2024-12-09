@@ -13,7 +13,7 @@ const Razorpay = require("razorpay");
 
 const home = async (req, res) => {
     try {
-        const offerhf = await Offer.findOne({ name: "HEADPHONE" });
+    const offerhf = await Offer.findOne({ name: "HEADPHONE" });
     const offersp = await Offer.findOne({ name: "SPEAKER" });
 
     const productwa = await Productdb.find({ category: "WATCH", isAvailable: true });
